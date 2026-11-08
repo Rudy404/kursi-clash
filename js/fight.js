@@ -63,7 +63,8 @@ KC.Fight = class {
     const com = KC.game.commentary;
     const rk = [this.p1.def.name, this.p2.def.name].sort().join('|');
     const rb = this.round === 1 && KC.rivalBanter && KC.rivalBanter[rk];
-    if (rb) { rb.slice(0, 3).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); }
+    this._introDur = 1.6;
+    if (rb) { rb.slice(0, 5).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introDur = 6.5; }
     else {
       com.say('A', KC.util.pick(this.p1.def.intro));
       com.say('B', KC.util.pick(this.p2.def.intro));
@@ -251,7 +252,7 @@ KC.Fight = class {
     if (this.phase === 'intro') {
       this.phaseT += dt;
       this.p1.f3d.update(dt, this.p1); this.p2.f3d.update(dt, this.p2);
-      if (this.phaseT > 1.6) { this.phase = 'fight'; KC.game.hud.splash('FIGHT!', 800); }
+      if (this.phaseT > (this._introDur || 1.6)) { this.phase = 'fight'; KC.game.hud.splash('FIGHT!', 800); }
       return;
     }
     if (this.phase === 'roundEnd') {

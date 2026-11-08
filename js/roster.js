@@ -12,7 +12,7 @@ KC.ROSTER = [
       { name: 'SHAKTI PRACHAR', dmg: 22, desc: 'A roaring speech shockwave. Opponent is stunned by sheer volume.' },
       { name: 'ALMIGHTY AASHIRWAD', dmg: 38, cine: 'push', desc: 'Charges a divine blessing, then blasts the opponent across the stage with a spherical wave.' }
     ],
-    intro: ['Mitron... taiyaar ho jao.', 'Chai thandi ho rahi hai, jaldi khatam karte hain.'],
+    intro: ['Mitron... taiyaar ho jao.', 'Chai thandi ho rahi hai, jaldi khatam karte hain.', 'Ek cutting ki keemat samajhte ho? Yeh fight bhi cutting mein khatam.', 'Stall toh maine har chowk pe lagaya hai. Yeh ring bhi mera chowk hai.'],
     win: ['Hard work beats everything. Aur mitron, chai peete raho.', 'Yeh jeet 140 crore mitron ko samarpit hai.']
   },
   {
@@ -25,7 +25,7 @@ KC.ROSTER = [
       { name: 'MOHABBAT WAVE', dmg: 22, desc: 'Opens a mohabbat ki dukaan mid-fight. Love hits harder than expected.' },
       { name: 'GATLING GALEEBI', dmg: 36, cine: 'flurry', desc: 'A stretchy-armed barrage of sixty-six slaps of affection.' }
     ],
-    intro: ['Main yahan mohabbat ki dukaan kholne aaya hoon.', 'Nafrat ke bazaar mein... ek thappad ki dukaan.'],
+    intro: ['Main yahan mohabbat ki dukaan kholne aaya hoon.', 'Nafrat ke bazaar mein... ek thappad ki dukaan.', 'Padyatra se itna stamina hai, tumhari stamina bar chhoti lagegi.', 'Daro mat. Sirf haarne ki taiyari karo.'],
     win: ['Daro mat, daro mat, daro mat.', 'Yeh mohabbat ki jeet hai. Aur meri. Mainly meri.']
   },
   {
@@ -38,7 +38,7 @@ KC.ROSTER = [
       { name: 'DHARNA DRIVE', dmg: 22, desc: 'Sits in instant dharna. Opponent trips over democracy.' },
       { name: 'BHADROK BLAST', dmg: 34, cine: 'push', desc: 'A circular wave of pure para energy launches the opponent into next week.' }
     ],
-    intro: ['Ami tomay khub bhalobashi... but first, fight.', 'Ei para-r rani ke challenge? Bhalo thakben.'],
+    intro: ['Ami tomay khub bhalobashi... but first, fight.', 'Ei para-r rani ke challenge? Bhalo thakben.', 'Khela hobe. Aur khela amar rules e hobe.', 'Dharna se leke dhamaka tak - ami shob jani.'],
     win: ['Maa, mati, manush. Aur ekta chhoto jay.', 'Cholun, bhaat khai.']
   },
   {
@@ -51,7 +51,7 @@ KC.ROSTER = [
       { name: 'WALL SLAM', dmg: 24, desc: 'Builds a small beautiful wall. Opponent walks into it. Everyone saw it.' },
       { name: 'COVFEFE CATACLYSM', dmg: 36, cine: 'push', desc: 'Nobody knows what it is. It knows what it is. The best blast. 36%.' }
     ],
-    intro: ['This will be the greatest fight. Everybody says so.', 'I know fights. I have the best fights.'],
+    intro: ['This will be the greatest fight. Everybody says so.', 'I know fights. I have the best fights.', 'No deal is better than a bad deal. Tumhari health bar? Very bad deal.', 'Tariff laga diya hai tumhare confidence pe. Hundred percent.'],
     win: ['Total victory. Complete. The fake news will not report it.', 'I won so much I am tired of winning.']
   },
   {
@@ -64,7 +64,7 @@ KC.ROSTER = [
       { name: 'THOKO TALWAR', dmg: 24, desc: 'A swift strike with administrative approval.' },
       { name: 'MAHANT MEGAQUAKE', dmg: 34, cine: 'push', desc: 'Slams the ground; a saffron shockwave evicts the opponent from the arena.' }
     ],
-    intro: ['Shanti se khelunga. Thoda bulldozer bhi chalega.', 'Bulldozer ready hai.'],
+    intro: ['Shanti se khelunga. Thoda bulldozer bhi chalega.', 'Bulldozer ready hai.', 'Na rahega banter, na rahega tumhara poster.', 'Foundation toh main roz girata hoon. Aaj tumhari guard ki baari.'],
     win: ['Yeh shanti thi. Asli wali.', 'Bulldozer ka kaam ho gaya.']
   },
   {
@@ -77,7 +77,7 @@ KC.ROSTER = [
       { name: 'TOLL BOOTH TRAP', dmg: 22, desc: 'A toll booth appears. Opponent cannot pass without change. Or dignity.' },
       { name: 'GREENFIELD GRAND SLAM', dmg: 34, cine: 'flurry', desc: 'Six-lane slap expressway, no speed limit, no mercy.' }
     ],
-    intro: ['Road banana hoga. Pehle thoda fight.', 'I have built 40 km of road today. This is cardio.'],
+    intro: ['Road banana hoga. Pehle thoda fight.', 'I have built 40 km of road today. This is cardio.', 'Greenfield corridor seedha tumhari health bar tak.', 'Toll free fight hai aaj. Warna tum afford nahi kar sakte.'],
     win: ['Project completed before deadline.', 'Toll collected. Drive safe.']
   },
   {
@@ -90,7 +90,7 @@ KC.ROSTER = [
       { name: 'LAAL LIPSTICK LAATH', dmg: 24, desc: 'A spinning kick that gets its own remix.' },
       { name: 'SUPERSTAR SMASHER', dmg: 36, cine: 'flurry', desc: 'Seventy takes, one shot, all hits. Box office destruction.' }
     ],
-    intro: ['Camera? Rolling. Action!', 'Ego fight ho jai, superhit style mein.'],
+    intro: ['Camera? Rolling. Action!', 'Ego fight ho jai, superhit style mein.', 'Script mein likha hai: tum haarte ho, interval se pehle.', 'Stunt double ki zaroorat padegi tumhe. Spoiler: nahi milega.'],
     win: ['Superhit! 100 crore club entry.', 'Autograph baad mein, pehle trophy.']
   },
   {
@@ -103,7 +103,7 @@ KC.ROSTER = [
       { name: 'CHARA CHAKRAVYUH', dmg: 22, desc: 'A maze of fodder contracts. Opponent loses way and health.' },
       { name: 'LALU... WAIT, RUSTOM ROCKET', dmg: 34, cine: 'flurry', desc: 'Platform announcement of doom followed by a first-class beating.' }
     ],
-    intro: ['Are bhains ke aage been bajega kya? Lad le!', 'Humra se takraoge? Ticket kaata?'],
+    intro: ['Are bhains ke aage been bajega kya? Lad le!', 'Humra se takraoge? Ticket kaata?', 'Engine chalu hai. Tumhara guard pehle station pe utrega.', 'Local ho ya express, hum kabhi nahi rukte.'],
     win: ['Signal green ho gaya. Gaadi chali.', 'Samosa khao, jeet manao.']
   },
   {
@@ -116,7 +116,7 @@ KC.ROSTER = [
       { name: 'ED RAID RUSH', dmg: 24, desc: 'Surprise inspection. Opponent surrenders health without notice.' },
       { name: 'ARAKSHIT AAG', dmg: 36, cine: 'push', desc: 'A reserved seat of fire expands outward. Nothing can stop the masterstroke.' }
     ],
-    intro: ['Yeh fight pehle hi decide ho chuki hai.', 'Masterstroke loading...'],
+    intro: ['Yeh fight pehle hi decide ho chuki hai.', 'Masterstroke loading...', 'Tumhari strategy mujhe kal hi leak ho gayi thi.', 'Yeh khel charitra ka nahi, chaturai ka hai. Dono mein tum kamzor ho.'],
     win: ['As planned. Sab planned.', 'Ab agla masterstroke.']
   },
   {
@@ -129,7 +129,7 @@ KC.ROSTER = [
       { name: 'WIFI MUFT MUKKA', dmg: 22, desc: 'A free punch. No password needed. Straight to the jaw.' },
       { name: 'ODD-EVEN OVERDRIVE', dmg: 34, cine: 'push', desc: 'On odd days he fights on the left, even days right. Today both. Shockwave.' }
     ],
-    intro: ['Main toh aam aadmi hoon. Aam aadmi bahut maarta hai.', 'Muffler tight, niyat saaf.'],
+    intro: ['Main toh aam aadmi hoon. Aam aadmi bahut maarta hai.', 'Muffler tight, niyat saaf.', 'VIP culture yahan nahi chalega. Yeh aam ring hai.', 'Jhaadu toh hai nahi paas, toh haath hi saaf karna padega.'],
     win: ['Aam aadmi ki jeet! Free wi-fi sabko!', 'Imandari jeet gayi. Aur main bhi.']
   },
   {
@@ -142,7 +142,7 @@ KC.ROSTER = [
       { name: 'FACK-CHECK FLEX', dmg: 22, desc: 'Debunks the opponent\'s last move so hard it hurts retroactively.' },
       { name: 'VIRAL VERIFICATION', dmg: 34, cine: 'flurry', desc: 'A fact-checking frenzy, shared in 47 family groups simultaneously.' }
     ],
-    intro: ['Source? Main hoon source.', 'Aaj fact check nahi, face check hoga.'],
+    intro: ['Source? Main hoon source.', 'Aaj fact check nahi, face check hoga.', 'Tumhari winning probability? Community notes ne already debunk kar di.', 'Breaking: tumne apne hi defeat ko verify kar diya.'],
     win: ['Verified. True. Satya. Forward kar do.', 'Fake news down. Fact bhai up.']
   }
 ];
@@ -157,7 +157,7 @@ KC.BOSS = {
     { name: 'AHIMSA?? NO-MA', dmg: 26, desc: 'Non-violence takes a lunch break. One historic spinning kick.' },
     { name: 'CHARKHA CYCLONE', dmg: 38, cine: 'push', desc: 'The charkha spins at 9000 rpm. The nation has never seen such a blast.' }
   ],
-  intro: ['Be the change... after I beat you.', 'My followers are watching. Do not embarrass yourself.'],
+  intro: ['Be the change... after I beat you.', 'My followers are watching. Do not embarrass yourself.', 'The march does not stop. Aaj march tumhare upar se guzregi.', 'Charkha ghoom raha hai. Kismat ka charkha.'],
   win: ['An eye for an eye makes the whole world blind. A kick for a kick makes you fall.', 'First they ignore you. Then they fight you. Then you win. Classic.']
 };
 
