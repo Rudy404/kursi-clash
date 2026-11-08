@@ -114,7 +114,7 @@ window.KC = window.KC || {};
   stickZone.addEventListener('touchcancel', stickEnd);
 
   // action buttons
-  let supAlt = false;
+  let supAlt = true; // toggled before use, so first SUPER press = signature cine (2), next = bonus strike (3)
   document.querySelectorAll('#touch-buttons .tbtn').forEach(btn => {
     const b = btn.dataset.btn;
     const press = e => {
