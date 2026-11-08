@@ -172,10 +172,8 @@ window.KC = window.KC || {};
   // ---------- screen wiring ----------
   el('notice-ok').onclick = () => {
     KC.Audio._ensure();
-    const btn = el('notice-ok');
-    btn.disabled = true; btn.textContent = 'LOADING NETAS... 0%';
-    KC.FighterAssets.preload(p => { btn.textContent = 'LOADING NETAS... ' + Math.round(p * 100) + '%'; })
-      .then(() => only('title'));
+    el('notice-ok').disabled = true;
+    only('title');
   };
   el('title').onclick = () => only('select');
   // ---------- online friend mode (PeerJS cloud signaling, free public server) ----------
@@ -220,8 +218,9 @@ window.KC = window.KC || {};
     if (d.t === 'snap' && online.role === 'guest' && game.fight) game.fight.netSnap = d.s;
     if (d.t === 'ev' && online.role === 'guest' && game.fight && d.kind === 'super') game.fight.netSuperEvent(d);
   });
-  function startFightOnline(role) {
+  async function startFightOnline(role) {
     online.active = true; online.role = role;
+    await KC.FighterAssets.ensure([KC.FighterAssets.bodyFor(state.p1.id), KC.FighterAssets.bodyFor(state.p2.id)]);
     const stage = KC.STAGES[state.selStage];
     only('hud');
     setStage(stage);
@@ -276,7 +275,11 @@ window.KC = window.KC || {};
     el('pause-menu').classList.toggle('visible', paused);
   }
 
-  function startFight() {
+  async function startFight() {
+    const btn = el('fight-btn');
+    btn.disabled = true; btn.textContent = 'LOADING...';
+    await KC.FighterAssets.ensure([KC.FighterAssets.bodyFor(state.p1.id), KC.FighterAssets.bodyFor(state.p2.id)]);
+    btn.disabled = false; btn.textContent = 'FIGHT!';
     const stage = KC.STAGES[state.selStage];
     only('hud');
     el('touch-ui').classList.add('ingame');

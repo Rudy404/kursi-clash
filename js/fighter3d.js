@@ -159,6 +159,19 @@ KC.FighterAssets = {
     punk: 'assets/models/Punk.glb'
   },
   cache: {}, ready: false, failed: 0,
+  bodyFor(id) { return (typeof KC_BODY_MAP !== 'undefined' && KC_BODY_MAP[id]) || 'knight'; },
+  loadBody(name) {
+    if (this.cache[name] || !this.BODIES[name]) return Promise.resolve();
+    this._pending = this._pending || {};
+    if (this._pending[name]) return this._pending[name];
+    const loader = new THREE.GLTFLoader();
+    this._pending[name] = new Promise(res => {
+      loader.load(this.BODIES[name], g => { this.cache[name] = g; this.ready = true; res(); },
+        undefined, () => { this.failed++; res(); });
+    });
+    return this._pending[name];
+  },
+  ensure(names) { return Promise.all([...new Set(names)].map(n => this.loadBody(n))); },
   preload(onProgress) {
     const names = Object.keys(this.BODIES);
     let done = 0;
