@@ -28,6 +28,27 @@ KC.Stage = class {
     ground.position.y = -0.2; ground.receiveShadow = true;
     this.group.add(ground);
 
+    // tiled plaza surface (procedural canvas texture, subtle)
+    const base = new THREE.Color(def.ground);
+    const tc = document.createElement('canvas'); tc.width = tc.height = 256;
+    const tg = tc.getContext('2d');
+    const shade = f => '#' + base.clone().multiplyScalar(f).getHexString();
+    tg.fillStyle = shade(1.0); tg.fillRect(0, 0, 256, 256);
+    for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) {
+      tg.fillStyle = shade((x + y) % 2 ? 0.94 : 1.05);
+      tg.fillRect(x * 64 + 1, y * 64 + 1, 62, 62);
+    }
+    tg.strokeStyle = shade(0.8); tg.lineWidth = 2;
+    for (let i = 0; i <= 4; i++) {
+      tg.beginPath(); tg.moveTo(i * 64, 0); tg.lineTo(i * 64, 256); tg.stroke();
+      tg.beginPath(); tg.moveTo(0, i * 64); tg.lineTo(256, i * 64); tg.stroke();
+    }
+    const tileTex = new THREE.CanvasTexture(tc);
+    tileTex.wrapS = tileTex.wrapT = THREE.RepeatWrapping; tileTex.repeat.set(6, 3);
+    const plaza = new THREE.Mesh(new THREE.PlaneGeometry(30, 14), new THREE.MeshStandardMaterial({ map: tileTex, roughness: 0.95 }));
+    plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.01; plaza.receiveShadow = true;
+    this.group.add(plaza);
+
     const bg = def.bg;
     if (bg === 'parliament') {
       // curved colonnade inspired by a round civic hall (original geometry)
@@ -49,6 +70,12 @@ KC.Stage = class {
       box(1.4, 0.3, 0.07, 0x138808, 7.25, 6.15, -6);
       // steps
       for (let i = 0; i < 3; i++) box(22, 0.18, 1.2, 0xbfae8e, 0, 0.09 + i * 0.18, -7.5 - i * 1.0);
+      // red carpet down the fight lane
+      const carpet = new THREE.Mesh(new THREE.PlaneGeometry(16, 2.6), mat(0xa02430, { roughness: 1 }));
+      carpet.rotation.x = -Math.PI / 2; carpet.position.set(0, 0.03, 0); carpet.receiveShadow = true;
+      this.group.add(carpet);
+      // carpet border stripes
+      for (const cz of [-1.28, 1.28]) box(16, 0.02, 0.09, 0xd4af37, 0, 0.04, cz);
     } else if (bg === 'chowk') {
       // street barricades + protest vibe (original)
       for (let i = -3; i <= 3; i++) {
