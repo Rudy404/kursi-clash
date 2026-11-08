@@ -120,14 +120,14 @@ KC.Stage = class {
       // moon
       const moon = new THREE.Mesh(new THREE.SphereGeometry(0.9, 14, 14), mat(0xfff3c4, { emissive: 0xffe9a0, emissiveIntensity: 0.7 }));
       moon.position.set(7, 8.5, -12); this.group.add(moon);
-      // overhead highway sign gantry (original)
-      cyl(0.09, 0.09, 5.2, 0x777777, -4.5, 2.6, -2.6);
-      cyl(0.09, 0.09, 5.2, 0x777777, 4.5, 2.6, -2.6);
-      box(9.6, 0.25, 0.25, 0x777777, 0, 5.2, -2.6);
-      box(3.4, 1.5, 0.12, 0x1a6b3c, -2.2, 4.3, -2.6);
-      box(3.4, 1.5, 0.12, 0x1a6b3c, 2.4, 4.3, -2.6);
-      box(0.5, 0.5, 0.14, 0xffd23f, -2.2, 4.9, -2.6);
-      box(0.5, 0.5, 0.14, 0xffd23f, 2.4, 4.9, -2.6);
+      // overhead highway sign gantry (original), set back into the skyline layer
+      cyl(0.11, 0.11, 6.0, 0x777777, -5.5, 3.0, -7.2);
+      cyl(0.11, 0.11, 6.0, 0x777777, 5.5, 3.0, -7.2);
+      box(11.6, 0.28, 0.28, 0x777777, 0, 6.0, -7.2);
+      box(3.2, 1.4, 0.14, 0x1a6b3c, -2.6, 5.1, -7.2);
+      box(3.2, 1.4, 0.14, 0x1a6b3c, 2.6, 5.1, -7.2);
+      box(0.45, 0.45, 0.16, 0xffd23f, -2.6, 5.7, -7.2);
+      box(0.45, 0.45, 0.16, 0xffd23f, 2.6, 5.7, -7.2);
       // street lights
       for (const sx of [-6, 0, 6]) {
         cyl(0.07, 0.07, 4.2, 0x555555, sx, 2.1, -3.5);
