@@ -151,9 +151,10 @@ KC.Camera = class {
     // portrait: derive distance from the real aspect so BOTH fighters always fit,
     // plus margin for arm reach and impact FX; cinematic zooms pass distOverride.
     const tanH = Math.tan((this.cam.fov * Math.PI / 180) / 2) * this.cam.aspect;
-    const wantDist = distOverride !== undefined ? distOverride :
-      (this.portrait ? KC.util.clamp((sep / 2 + 0.65) / Math.max(tanH, 0.05), 4.6, 21)
-                     : KC.util.clamp(sep * 0.9 + 5.5, 7, 13));
+    const fitDist = this.portrait ? KC.util.clamp((sep / 2 + 0.65) / Math.max(tanH, 0.05), 4.6, 21)
+                                  : KC.util.clamp(sep * 0.9 + 5.5, 7, 13);
+    // cinematic override zooms in for drama, but never crops a fighter out of frame
+    const wantDist = distOverride !== undefined ? Math.max(distOverride, fitDist) : fitDist;
     this.dist = KC.util.lerp(this.dist, wantDist, 1 - Math.pow(0.001, dt));
     this.focusX = KC.util.lerp(this.focusX, mid, 1 - Math.pow(0.0005, dt));
     this.shake = Math.max(0, this.shake - dt * 1.4);
