@@ -239,26 +239,7 @@ KC.GLBFighter = class {
       }
     });
 
-    // normalize height to ~2.0 world units, feet at y=0
-    const bb = new THREE.Box3().setFromObject(model);
-    const h = bb.max.y - bb.min.y || 1;
-    const s = 2.0 / h;
-    model.scale.setScalar(s);
-    model.position.y = -bb.min.y * s;
-    if (fdef.id === 'mahabapu') model.scale.multiplyScalar(1.25);
     this.root.add(model);
-
-    // caricature box head mounted on the head bone (keeps neta identity + follows animation)
-    this.headBone = model.getObjectByName('head') || model.getObjectByName('Head');
-    if (this.headBone) {
-      const headMesh = KC.Head3D.build(fdef);
-      this.headBone.add(headMesh);
-      // bone-space: counter the model scale so the head keeps an absolute world size,
-      // and lift it to sit where the hidden head was
-      const scaleFix = 1 / (s * (fdef.id === 'mahabapu' ? 1.25 : 1));
-      headMesh.scale.setScalar(scaleFix);
-      headMesh.position.set(0, 0.10 * scaleFix, 0.06 * scaleFix);
-    }
 
     this.animMap = KC_BODY_ANIMMAP[bodyName] === 'q' ? KC_ANIM_Q : KC_ANIM;
     this.mixer = new THREE.AnimationMixer(model);
@@ -266,6 +247,33 @@ KC.GLBFighter = class {
     src.animations.forEach(c => { this.actions[c.name] = this.mixer.clipAction(c); });
     this.current = null;
     this.punchFlip = false;
+
+    // normalize body scale from the head-bone bind position (rig-agnostic: handles
+    // KayKit metre rigs and Quaternius centimetre armatures alike)
+    this.headBone = model.getObjectByName('head') || model.getObjectByName('Head');
+    let boneWorldScale = 1;
+    if (this.headBone) {
+      const idleClip = this.animMap.idle.clip;
+      const idleAction = this.actions[Array.isArray(idleClip) ? idleClip[0] : idleClip];
+      if (idleAction) { idleAction.play(); this.mixer.update(0); }
+      this.root.updateMatrixWorld(true);
+      const hy = new THREE.Vector3();
+      this.headBone.getWorldPosition(hy);
+      let s = 1.05 / (hy.y || 1);
+      if (fdef.id === 'mahabapu') s *= 1.25;
+      model.scale.setScalar(s);
+      this.root.updateMatrixWorld(true);
+      const ws = new THREE.Vector3();
+      this.headBone.getWorldScale(ws);
+      boneWorldScale = ws.y || 1;
+    }
+    if (this.headBone) {
+      const headMesh = KC.Head3D.build(fdef);
+      this.headBone.add(headMesh);
+      const scaleFix = 1 / boneWorldScale;
+      headMesh.scale.setScalar(scaleFix);
+      headMesh.position.set(0, 0.12 * scaleFix, 0.06 * scaleFix);
+    }
     this.facing = faceLeft ? -1 : 1;
     this.root.rotation.y = faceLeft ? -Math.PI / 2 + 0.55 : Math.PI / 2 - 0.55;
     this.anim = 'idle'; this.animT = 0; this.animDur = 0; this.t = 0;
