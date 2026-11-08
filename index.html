@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>KURSI CLASH — Political Satire Fighter</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="game-canvas"></canvas>
+
+<!-- SATIRE NOTICE -->
+<div id="notice" class="screen visible">
+  <div class="notice-card">
+    <h2>SATIRE NOTICE · व्यंग्य सूचना</h2>
+    <p>KURSI CLASH is a political satire and parody game made for entertainment and humour. All characters are exaggerated fictional caricatures with original art, writing and voices. This game is not affiliated with, endorsed by, or connected to any political leader, party, government body or news organisation. Nothing here is a factual statement or allegation. Cartoon-style fictional fighting only — please do not imitate in real life. Non-commercial fan satire.</p>
+    <p class="hi">यह एक व्यंग्यात्मक खेल है। सभी पात्र काल्पनिक और अतिरंजित हैं। इसका किसी भी राजनेता, दल या संस्था से कोई संबंध नहीं है। इसे वास्तविक तथ्य न समझें।</p>
+    <button id="notice-ok" class="big-btn">I UNDERSTAND · CONTINUE</button>
+  </div>
+</div>
+
+<!-- TITLE -->
+<div id="title" class="screen">
+  <div class="title-wrap">
+    <h1 class="game-logo"><span class="l1">KURSI</span><span class="l2">CLASH</span></h1>
+    <p class="tagline">THE GREAT NETA FIGHT · SATIRE EDITION</p>
+    <p class="press-start blink">PRESS ENTER / TAP TO START</p>
+  </div>
+</div>
+
+<!-- CHARACTER SELECT -->
+<div id="select" class="screen">
+  <h2 class="select-title">SELECT YOUR NETA</h2>
+  <div class="controls-hint" id="select-hint"></div>
+  <div id="roster-grid"></div>
+  <div class="select-row">
+    <span class="sel-label">STAGE</span>
+    <div id="stage-row" class="opt-row"></div>
+  </div>
+  <div class="select-row">
+    <span class="sel-label">CPU</span>
+    <div id="diff-row" class="opt-row"></div>
+  </div>
+  <div class="select-actions">
+    <button id="friend-btn" class="act-btn alt" disabled title="Coming in online update">🌐 FRIEND (SOON)</button>
+    <button id="fight-btn" class="act-btn go">FIGHT!</button>
+  </div>
+  <div id="fighter-info-left" class="fighter-info left"></div>
+  <div id="fighter-info-right" class="fighter-info right"></div>
+</div>
+
+<!-- FIGHT HUD -->
+<div id="hud" class="screen hud-transparent">
+  <div class="hud-top">
+    <div class="hud-side left">
+      <div class="hud-name" id="hud-name-1">P1</div>
+      <div class="health-bar"><div class="health-chip" id="chip-1"></div><div class="health-fill" id="health-1"></div></div>
+      <div class="round-pips" id="pips-1"></div>
+    </div>
+    <div class="hud-timer" id="timer">60</div>
+    <div class="hud-side right">
+      <div class="hud-name" id="hud-name-2">CPU</div>
+      <div class="health-bar"><div class="health-chip" id="chip-2"></div><div class="health-fill" id="health-2"></div></div>
+      <div class="round-pips" id="pips-2"></div>
+    </div>
+  </div>
+  <div class="hud-bottom">
+    <div class="shakti-wrap left"><span class="shakti-label">SHAKTI</span><div class="shakti-bar"><div class="shakti-fill" id="shakti-1"></div></div></div>
+    <div id="banter-bar"><span id="banter-1"></span><span class="banter-vs">VS</span><span id="banter-2"></span></div>
+    <div class="shakti-wrap right"><div class="shakti-bar"><div class="shakti-fill" id="shakti-2"></div></div><span class="shakti-label">SHAKTI</span></div>
+  </div>
+  <div id="ticker"><span id="ticker-text"></span></div>
+  <div id="splash"></div>
+  <button id="pause-btn" class="icon-btn">⏸</button>
+  <button id="mute-btn" class="icon-btn">🔊</button>
+</div>
+
+<!-- TOUCH CONTROLS -->
+<div id="touch-ui">
+  <div id="stick-zone"><div id="stick-base"><div id="stick-nub"></div></div></div>
+  <div id="touch-buttons">
+    <button class="tbtn" data-btn="punch">PUNCH</button>
+    <button class="tbtn" data-btn="kick">KICK</button>
+    <button class="tbtn" data-btn="grab">GRAB</button>
+    <button class="tbtn super" data-btn="super">SUPER</button>
+  </div>
+</div>
+
+<!-- PAUSE -->
+<div id="pause-menu" class="screen">
+  <div class="notice-card">
+    <h2>PAUSED · रुके हुए</h2>
+    <button id="resume-btn" class="big-btn">RESUME</button>
+    <button id="quit-btn" class="big-btn alt">QUIT TO SELECT</button>
+  </div>
+</div>
+
+<!-- REMATCH -->
+<div id="end-screen" class="screen">
+  <div class="notice-card">
+    <h2 id="end-title">WINNER</h2>
+    <p id="end-quote"></p>
+    <button id="rematch-btn" class="big-btn">REMATCH</button>
+    <button id="change-btn" class="big-btn alt">CHANGE NETA</button>
+  </div>
+</div>
+
+<script src="js/vendor/three.min.js"></script>
+<script src="js/util.js"></script>
+<script src="js/roster.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/faces.js"></script>
+<script src="js/fighter3d.js"></script>
+<script src="js/stage.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/commentary.js"></script>
+<script src="js/cinematics.js"></script>
+<script src="js/cpu.js"></script>
+<script src="js/fight.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
