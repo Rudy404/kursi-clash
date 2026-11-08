@@ -92,7 +92,7 @@ KC.Fight = class {
     p.shakti = 0;
     p.pendingSuper = sup;
     p.state = 'super'; p.stateT = 0; p.stateDur = 9;
-    this.events.push({ t: 'super', i: idx });
+    this.events.push({ t: 'super', i: idx, who: p === this.p1 ? 0 : 1 });
     const foe = p === this.p1 ? this.p2 : this.p1;
     const done = () => { if (p.state === 'super') { p.state = 'idle'; p.stateT = 0; } p.pendingSuper = null; };
     if (sup.cine) {
@@ -237,6 +237,7 @@ KC.Fight = class {
   }
 
   update(rawDt, input1, input2) {
+    if (this.mode === 'puppet') { this._puppetUpdate(rawDt); return; }
     if (this._hitstop > 0) { this._hitstop -= rawDt; this.fx.update(rawDt); return; }
     const dt = rawDt * this.timeScale;
     this.cinematic.update(dt);
@@ -273,6 +274,67 @@ KC.Fight = class {
       this.ko(w === this.p1 ? this.p2 : this.p1, w, true);
     }
     KC.game.hud.update(this.p1, this.p2, Math.max(0, this.timeLeft));
+  }
+
+  /* ---- online guest puppet: render host snapshots, no simulation ---- */
+  _puppetUpdate(rawDt) {
+    const s = this.netSnap;
+    if (s) {
+      const prevPhase = this.phase, prevRound = this.round, prevWins = this.wins.slice();
+      this.phase = s.phase; this.timeLeft = s.timeLeft; this.round = s.round;
+      if (s.wins[0] !== this.wins[0] || s.wins[1] !== this.wins[1]) {
+        this.wins = s.wins.slice();
+        KC.game.hud.show(this.p1.def, this.p2.def, this.wins[0], this.wins[1]);
+      }
+      const roundWinner = s.wins[0] > prevWins[0] ? this.p1.def : (s.wins[1] > prevWins[1] ? this.p2.def : null);
+      for (const [p, ps] of [[this.p1, s.p1], [this.p2, s.p2]]) {
+        if (ps.anim && p.f3d.anim !== ps.anim) p.f3d.play(ps.anim, 0.45);
+        p.x = ps.x; p.hp = ps.hp; p.shakti = ps.shakti;
+        p.state = ps.state; p.blocking = ps.blocking;
+        p.liftY = ps.liftY; p.airborne = ps.airborne;
+        if (ps.facing !== p.facing) {
+          p.facing = ps.facing; p.f3d.facing = ps.facing;
+          p.f3d.root.rotation.y = ps.facing === 1 ? Math.PI / 2 - 0.55 : -Math.PI / 2 + 0.55;
+        }
+        p.f3d.root.position.x = ps.x;
+      }
+      if (prevPhase !== 'roundEnd' && s.phase === 'roundEnd') {
+        KC.game.hud.splash(s.timeUp ? "TIME'S UP!" : 'K.O.!', 1800);
+        if (roundWinner) KC.game.commentary.local('ko', { f: roundWinner });
+      }
+      if (prevRound !== s.round && s.phase === 'intro') {
+        KC.game.hud.show(this.p1.def, this.p2.def, this.wins[0], this.wins[1]);
+        KC.game.hud.splash('ROUND ' + s.round, 1500);
+      }
+      if (prevPhase === 'intro' && s.phase === 'fight') KC.game.hud.splash('FIGHT!', 800);
+      if (s.phase === 'over' && !this.over) {
+        this.over = true;
+        const winner = this.wins[0] >= 2 ? this.p1 : this.p2;
+        const loser = winner === this.p1 ? this.p2 : this.p1;
+        KC.game.onMatchOver(winner.def, loser.def, this.wins);
+      }
+    }
+    this.cinematic.update(rawDt);
+    this.fx.update(rawDt);
+    this.p1.f3d.update(rawDt, this.p1);
+    this.p2.f3d.update(rawDt, this.p2);
+    if (this.phase === 'fight') KC.game.hud.update(this.p1, this.p2, Math.max(0, this.timeLeft));
+  }
+
+  netSuperEvent(ev) {
+    const attacker = ev.who === 0 ? this.p1 : this.p2;
+    const foe = ev.who === 0 ? this.p2 : this.p1;
+    const sup = attacker.def.supers[ev.i];
+    if (!sup) return;
+    KC.game.commentary.local('super', { f: attacker.def, superName: sup.name });
+    if (sup.cine) {
+      if (KC.Audio) KC.Audio.play('super');
+      this.cinematic.start(sup.cine, attacker, foe, () => {});
+    } else {
+      attacker.f3d.play('supercast', 0.8);
+      if (KC.Audio) KC.Audio.play('super');
+      KC.game.hud.splash(sup.name, 1200, true);
+    }
   }
 
   matchOver() {

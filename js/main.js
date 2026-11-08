@@ -7,6 +7,8 @@ window.KC = window.KC || {};
   const only = id => screens.forEach(s => el(s) && el(s).classList.toggle('visible', s === id));
 
   const state = { difficulty: 1, selStage: 0, p1: null, p2: null };
+  const online = { active: false, role: null, guestPick: null,
+    remoteInput: { move: 0, punch: 0, kick: 0, grab: 0, block: 0, super: null } };
 
   // ---------- renderer ----------
   const canvas = el('game-canvas');
@@ -170,8 +172,67 @@ window.KC = window.KC || {};
   // ---------- screen wiring ----------
   el('notice-ok').onclick = () => { only('title'); KC.Audio._ensure(); };
   el('title').onclick = () => only('select');
+  // ---------- online friend mode (PeerJS cloud signaling, free public server) ----------
+  const onlineStatus = t => { el('online-status').textContent = t; };
+  el('friend-btn').onclick = () => el('online-panel').classList.toggle('hidden');
+  el('host-btn').onclick = () => {
+    onlineStatus('Creating room...');
+    KC.Online.host(res => {
+      if (!res.ok) { onlineStatus('Could not create room: ' + res.error); return; }
+      online.role = 'host';
+      onlineStatus('Room code: ' + res.code + ' - share it with your friend. Waiting for them to join...');
+    });
+  };
+  KC.Online.onOpen(() => {
+    if (online.role === 'host') onlineStatus('Friend connected! Pick your neta and hit FIGHT when they have picked theirs.');
+    if (online.role === 'guest') onlineStatus('Connected! Pick your neta and hit FIGHT.');
+  });
+  KC.Online.onClose(() => {
+    onlineStatus('Connection closed.');
+    if (online.active) { online.active = false; if (game.fight) { game.fight = null; game.hud.hide(); game.commentary.stopAll(); only('select'); } }
+  });
+  KC.Online.onMessage(d => {
+    if (!d || !d.t) return;
+    if (d.t === 'pick') { online.guestPick = d.name; onlineStatus('Friend picked ' + d.name + '. Your turn - pick and FIGHT!'); }
+    if (d.t === 'start' && online.role === 'guest') {
+      state.p1 = KC.ROSTER.find(r => r.name === d.p1) || state.p1;
+      state.p2 = KC.ROSTER.find(r => r.name === d.p2) || state.p2;
+      state.selStage = d.stage | 0;
+      startFightOnline('guest');
+    }
+    if (d.t === 'in' && online.role === 'host') online.remoteInput = d.i;
+    if (d.t === 'snap' && online.role === 'guest' && game.fight) game.fight.netSnap = d.s;
+    if (d.t === 'ev' && online.role === 'guest' && game.fight && d.kind === 'super') game.fight.netSuperEvent(d);
+  });
+  function startFightOnline(role) {
+    online.active = true; online.role = role;
+    const stage = KC.STAGES[state.selStage];
+    only('hud');
+    setStage(stage);
+    game.commentary.stopAll();
+    game.fight = new KC.Fight(scene, stage, state.p1, state.p2, role === 'host' ? 'friend' : 'puppet', state.difficulty);
+    online.active = true;
+    if (role === 'host') game.fight.startRound();
+    else { game.fight.phase = 'intro'; KC.game.hud.show(state.p1, state.p2, 0, 0); }
+    resize();
+  }
+  el('host-btn').disabled = false;
+
   el('fight-btn').onclick = () => {
     if (!state.p1) { el('select-hint').textContent = 'Pehle neta chuno!'; return; }
+    if (online.role === 'host' && KC.Online.connected()) {
+      if (!online.guestPick) { onlineStatus('Waiting for your friend to pick their neta...'); return; }
+      state.p2 = KC.ROSTER.find(r => r.name === online.guestPick) || state.p2;
+      KC.Online.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+      startFightOnline('host');
+      return;
+    }
+    if (online.role === 'guest' && KC.Online.connected()) {
+      KC.Online.send({ t: 'pick', name: state.p1.name });
+      state.p2 = state.p1; // placeholder until host sends start
+      onlineStatus('Picked ' + state.p1.name + '. Waiting for host to start...');
+      return;
+    }
     startFight();
   };
   el('rematch-btn').onclick = () => startFight();
@@ -180,6 +241,7 @@ window.KC = window.KC || {};
   el('resume-btn').onclick = () => togglePause();
   el('quit-btn').onclick = () => {
     paused = false; hide('pause-menu');
+    if (online.active) { online.active = false; KC.Online.close(); online.role = null; onlineStatus(''); }
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
   };
@@ -213,7 +275,31 @@ window.KC = window.KC || {};
     const rawDt = Math.min(0.05, (now - last) / 1000); last = now;
     if (!paused && game.fight && !game.fight.over) {
       if (stickId === null) pollKeys();
-      game.fight.update(rawDt, input1, input1);
+      if (online.active && online.role === 'host') {
+        game.fight.update(rawDt, input1, online.remoteInput);
+        online._acc = (online._acc || 0) + rawDt;
+        if (online._acc > 0.066) {
+          online._acc = 0;
+          const f = game.fight, pack = p => ({ x: +p.x.toFixed(3), hp: +p.hp.toFixed(3), shakti: +p.shakti.toFixed(3),
+            state: p.state, facing: p.facing, blocking: p.blocking, liftY: +p.liftY.toFixed(3), airborne: p.airborne, anim: p.f3d.anim });
+          KC.Online.send({ t: 'snap', s: { p1: pack(f.p1), p2: pack(f.p2), phase: f.phase,
+            timeLeft: +f.timeLeft.toFixed(2), round: f.round, wins: f.wins.slice(), timeUp: f.timeLeft <= 0 } });
+        }
+        while (f.events.length) {
+          const ev = f.events.shift();
+          if (ev.t === 'super') KC.Online.send({ t: 'ev', kind: 'super', i: ev.i, who: ev.who });
+        }
+      } else if (online.active && online.role === 'guest') {
+        game.fight.update(rawDt, input1, input1);
+        online._acc = (online._acc || 0) + rawDt;
+        if (online._acc > 0.033) {
+          online._acc = 0;
+          KC.Online.send({ t: 'in', i: { move: input1.move, punch: input1.punch, kick: input1.kick,
+            grab: input1.grab, block: input1.block, super: input1.super } });
+        }
+      } else {
+        game.fight.update(rawDt, input1, input1);
+      }
       input1.punch = input1.kick = input1.grab = 0; input1.super = null;
     } else if (game.fight) {
       game.fight.p1.f3d.update(rawDt, game.fight.p1);

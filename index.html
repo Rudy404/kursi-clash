@@ -44,8 +44,17 @@
     <div id="diff-row" class="opt-row"></div>
   </div>
   <div class="select-actions">
-    <button id="friend-btn" class="act-btn alt" disabled title="Coming in online update">🌐 FRIEND (SOON)</button>
+    <button id="friend-btn" class="act-btn alt">🌐 FRIEND ONLINE</button>
     <button id="fight-btn" class="act-btn go">FIGHT!</button>
+  </div>
+  <div id="online-panel" class="online-panel hidden">
+    <div class="online-row">
+      <button id="host-btn" class="act-btn alt">HOST GAME</button>
+      <span class="online-or">or</span>
+      <input id="join-code" class="join-input" maxlength="6" placeholder="CODE" autocomplete="off">
+      <button id="join-btn" class="act-btn alt">JOIN</button>
+    </div>
+    <div id="online-status" class="online-status"></div>
   </div>
   <div id="fighter-info-left" class="fighter-info left"></div>
   <div id="fighter-info-right" class="fighter-info right"></div>
@@ -108,9 +117,11 @@
 </div>
 
 <script src="js/vendor/three.min.js"></script>
+<script src="js/vendor/peerjs.min.js"></script>
 <script src="js/util.js"></script>
 <script src="js/roster.js"></script>
 <script src="js/rival-banter.js"></script>
+<script src="js/online.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/faces.js"></script>
 <script src="js/fighter3d.js"></script>
