@@ -126,7 +126,7 @@ window.KC = window.KC || {};
 
   // ---------- select screen ----------
   const grid = el('roster-grid');
-  KC.ROSTER.forEach(f => {
+  [...KC.ROSTER, KC.BOSS].forEach(f => {
     const card = document.createElement('button');
     card.className = 'face-cell'; card.dataset.id = f.id;
     const port = KC.Faces.portrait(f, 104);
@@ -136,7 +136,7 @@ window.KC = window.KC || {};
       state.p1 = f;
       [...grid.children].forEach(c => { c.classList.remove('sel-1'); const t = c.querySelector('.tag.cpu'); if (t) t.remove(); });
       card.classList.add('sel-1');
-      const others = KC.ROSTER.filter(o => o.id !== f.id);
+      const others = [...KC.ROSTER, KC.BOSS].filter(o => o.id !== f.id);
       state.p2 = KC.util.pick(others);
       const cpuCard = [...grid.children].find(c => c.dataset.id === state.p2.id);
       if (cpuCard) cpuCard.insertAdjacentHTML('beforeend', '<span class="tag cpu">CPU</span>');
