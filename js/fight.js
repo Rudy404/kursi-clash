@@ -56,8 +56,13 @@ KC.Fight = class {
     h.show(this.p1.def, this.p2.def, this.wins[0], this.wins[1]);
     h.splash('ROUND ' + this.round, 1500);
     const com = KC.game.commentary;
-    com.say('A', KC.util.pick(this.p1.def.intro));
-    com.say('B', KC.util.pick(this.p2.def.intro));
+    const rk = [this.p1.def.name, this.p2.def.name].sort().join('|');
+    const rb = this.round === 1 && KC.rivalBanter && KC.rivalBanter[rk];
+    if (rb) { rb.slice(0, 3).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); }
+    else {
+      com.say('A', KC.util.pick(this.p1.def.intro));
+      com.say('B', KC.util.pick(this.p2.def.intro));
+    }
     com.local('intro', { f1: this.p1.def, f2: this.p2.def });
     if (this.round === 1) com.aiMoment('intro', { f: this.p1.def, detail: this.p1.def.name + ' versus ' + this.p2.def.name + ', round 1 of a satirical political fighting game' });
   }

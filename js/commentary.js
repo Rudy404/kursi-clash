@@ -38,6 +38,9 @@ KC.Commentary = class {
       chip: ['Block karke bhi damage? {f} ka defense leak ho raha hai!', '{f} ka guard strong, but chip chip chip.'],
       comeback: ['{f} wapasi kar raha hai! Script likhi ja rahi hai!', 'COMEBACK ALERT: {f} abhi zinda hai!'],
     };
+    if (KC.extraCommentary) for (const k of ['super','ko','comeback']) {
+      if (KC.extraCommentary[k]) this.banks[k] = this.banks[k].concat(KC.extraCommentary[k]);
+    }
   }
 
   _pickVoice(cfg) {
