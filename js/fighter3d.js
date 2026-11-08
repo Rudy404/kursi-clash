@@ -152,7 +152,11 @@ KC.FighterAssets = {
     mage: 'assets/models/Mage.glb',
     rogue: 'assets/models/Rogue.glb',
     hooded: 'assets/models/Rogue_Hooded.glb',
-    business: 'assets/models/BusinessMan.glb'
+    business: 'assets/models/BusinessMan.glb',
+    worker: 'assets/models/Worker.glb',
+    king: 'assets/models/King.glb',
+    hoodie: 'assets/models/Hoodie.glb',
+    punk: 'assets/models/Punk.glb'
   },
   cache: {}, ready: false, failed: 0,
   preload(onProgress) {
@@ -167,9 +171,10 @@ KC.FighterAssets = {
 };
 
 const KC_BODY_MAP = {
-  chaiboss: 'barbarian', yatrayodha: 'knight', dididhamaka: 'hooded', tariffchacha: 'mage',
-  bulldozerbaba: 'barbarian', highwayman: 'rogue', starneta: 'business', railrustom: 'barbarian',
-  chanakyaboss: 'business', mufflerman: 'hooded', factbhai: 'rogue', mahabapu: 'barbarian'
+  yatrayodha: 'knight', dididhamaka: 'hooded',
+  bulldozerbaba: 'barbarian', highwayman: 'worker', starneta: 'business', railrustom: 'barbarian',
+  chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'barbarian',
+  chaiboss: 'king', tariffchacha: 'king'
 };
 
 const KC_ANIM = {
@@ -214,12 +219,18 @@ const KC_ANIM_Q = {
   lose:      { clip: 'CharacterArmature|Death', hold: true, ts: 0.7 }
 };
 
-const KC_BODY_ANIMMAP = { business: 'q' };
+const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q' };
 
 const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat|throw/i;
 
 /* per-body silhouette tuning so realistic bodies keep coherent caricature proportions */
-const KC_BODY_TUNE = { business: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 } };
+const KC_BODY_TUNE = {
+  business: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  worker: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  king: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  hoodie: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  punk: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
+};
 
 KC.GLBFighter = class {
   constructor(fdef, faceLeft) {
