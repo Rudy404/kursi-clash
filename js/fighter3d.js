@@ -216,7 +216,10 @@ const KC_ANIM_Q = {
 
 const KC_BODY_ANIMMAP = { business: 'q' };
 
-const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat/i;
+const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat|throw/i;
+
+/* per-body silhouette tuning so realistic bodies keep coherent caricature proportions */
+const KC_BODY_TUNE = { business: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 } };
 
 KC.GLBFighter = class {
   constructor(fdef, faceLeft) {
@@ -270,9 +273,13 @@ KC.GLBFighter = class {
     if (this.headBone) {
       const headMesh = KC.Head3D.build(fdef);
       this.headBone.add(headMesh);
-      const scaleFix = 1 / boneWorldScale;
+      const tune = KC_BODY_TUNE[bodyName] || {};
+      if (tune.widen) { model.scale.x *= tune.widen; model.scale.z *= tune.widen; }
+      if (tune.ySquash) model.scale.y *= tune.ySquash;
+      const scaleFix = (tune.headScale || 1) / boneWorldScale;
       headMesh.scale.setScalar(scaleFix);
       headMesh.position.set(0, 0.12 * scaleFix, 0.06 * scaleFix);
+      if (tune.headPitch) headMesh.rotation.x += tune.headPitch;
     }
     this.facing = faceLeft ? -1 : 1;
     this.root.rotation.y = faceLeft ? -Math.PI / 2 + 0.55 : Math.PI / 2 - 0.55;
