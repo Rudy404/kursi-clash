@@ -24,8 +24,8 @@ KC.Stage = class {
     };
 
     // ground
-    const ground = new THREE.Mesh(new THREE.BoxGeometry(30, 0.4, 14), mat(def.ground));
-    ground.position.y = -0.2; ground.receiveShadow = true;
+    const ground = new THREE.Mesh(new THREE.BoxGeometry(30, 0.4, 26), mat(def.ground));
+    ground.position.y = -0.2; ground.position.z = 3; ground.receiveShadow = true;
     this.group.add(ground);
 
     // tiled plaza surface (procedural canvas texture, subtle)
@@ -128,11 +128,6 @@ KC.Stage = class {
       box(2.2, 0.95, 0.13, 0x1a6b3c, 2.6, 6.8, -7.2);
       box(0.34, 0.34, 0.15, 0xffd23f, -2.6, 7.25, -7.2);
       box(0.34, 0.34, 0.15, 0xffd23f, 2.6, 7.25, -7.2);
-      // roadside direction sign (original), inside typical portrait framing
-      cyl(0.08, 0.08, 3.2, 0x666666, 0.9, 1.6, -2.6);
-      box(1.8, 1.1, 0.1, 0x1a6b3c, 0.9, 3.3, -2.6);
-      box(1.1, 0.2, 0.11, 0xffffff, 0.9, 3.5, -2.6);
-      box(0.65, 0.2, 0.11, 0xffffff, 0.72, 3.15, -2.6);
       // street lights
       for (const sx of [-6, 0, 6]) {
         cyl(0.07, 0.07, 4.2, 0x555555, sx, 2.1, -3.5);
