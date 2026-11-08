@@ -156,7 +156,8 @@ KC.FighterAssets = {
     worker: 'assets/models/Worker.glb',
     king: 'assets/models/King.glb',
     hoodie: 'assets/models/Hoodie.glb',
-    punk: 'assets/models/Punk.glb'
+    punk: 'assets/models/Punk.glb',
+    womandress: 'assets/models/WomanDress.glb'
   },
   cache: {}, ready: false, failed: 0,
   bodyFor(id) { return (typeof KC_BODY_MAP !== 'undefined' && KC_BODY_MAP[id]) || 'knight'; },
@@ -184,7 +185,7 @@ KC.FighterAssets = {
 };
 
 const KC_BODY_MAP = {
-  yatrayodha: 'knight', dididhamaka: 'hooded',
+  yatrayodha: 'knight', dididhamaka: 'womandress',
   bulldozerbaba: 'barbarian', highwayman: 'worker', starneta: 'business', railrustom: 'barbarian',
   chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'barbarian',
   chaiboss: 'worker', tariffchacha: 'business'
@@ -232,7 +233,32 @@ const KC_ANIM_Q = {
   lose:      { clip: 'CharacterArmature|Death', hold: true, ts: 0.7 }
 };
 
-const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q' };
+/* 11-clip female rig (HumanArmature|Female_*): Sitting doubles as the dharna block */
+const KC_ANIM_DIDI = {
+  idle:      { clip: 'HumanArmature|Female_Idle', loop: true },
+  walk:      { clip: 'HumanArmature|Female_Run', loop: true, ts: 1.1 },
+  block:     { clip: 'HumanArmature|Female_Sitting', loop: true },
+  win:       { clip: 'HumanArmature|Female_Clapping', loop: true },
+  punch:     { clip: 'HumanArmature|Female_Punch' },
+  kick:      { clip: 'HumanArmature|Female_SwordSlash' },
+  grab:      { clip: 'HumanArmature|Female_SwordSlash' },
+  hurt:      { clip: 'HumanArmature|Female_Standing' },
+  hit:       { clip: 'HumanArmature|Female_Standing' },
+  sweep:     { clip: 'HumanArmature|Female_Punch' },
+  launched:  { clip: 'HumanArmature|Female_Jump' },
+  air:       { clip: 'HumanArmature|Female_Jump', loop: true },
+  supercast: { clip: 'HumanArmature|Female_Standing' },
+  super:     { clip: 'HumanArmature|Female_SwordSlash' },
+  swing:     { clip: 'HumanArmature|Female_SwordSlash' },
+  intro:     { clip: 'HumanArmature|Female_Jump' },
+  ko:        { clip: 'HumanArmature|Female_Death', hold: true },
+  lose:      { clip: 'HumanArmature|Female_Death', hold: true, ts: 0.7 }
+};
+
+const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q', womandress: 'didi' };
+
+/* per-body material-name recolor (bodies whose meshes are not <Prefix>_Body/Legs/Feet) */
+const KC_BODY_MATRECOLOR = { womandress: { Dress: 'kurta', Shoes: 'chappal' } };
 
 const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat|throw/i;
 
@@ -242,7 +268,8 @@ const KC_BODY_TUNE = {
   worker: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   king: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   hoodie: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
-  punk: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
+  punk: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  womandress: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
 };
 
 KC.GLBFighter = class {
@@ -266,7 +293,10 @@ KC.GLBFighter = class {
         // never skin/eyes/hair; other meshes keep the light identity tint
         const matKeep = /^(Skin|Eye|Eyebrows|Hair)/i;
         const part = /_(Body|Legs|Feet)(_[0-9]+)?$/.exec(o.name);
-        if (part && o.material.name && !matKeep.test(o.material.name)) {
+        const matMap = (typeof KC_BODY_MATRECOLOR !== 'undefined' && KC_BODY_MATRECOLOR[bodyName]) || null;
+        if (matMap && matMap[o.material.name]) {
+          o.material.color.set(fdef[matMap[o.material.name]]);
+        } else if (part && o.material.name && !matKeep.test(o.material.name)) {
           const tgt = part[1] === 'Body' ? fdef.kurta : part[1] === 'Legs' ? fdef.pants : fdef.chappal;
           o.material.color.set(tgt);
         } else if (o.material.color) o.material.color.lerp(kurta, 0.22);
@@ -275,7 +305,7 @@ KC.GLBFighter = class {
 
     this.root.add(model);
 
-    this.animMap = KC_BODY_ANIMMAP[bodyName] === 'q' ? KC_ANIM_Q : KC_ANIM;
+    this.animMap = { q: KC_ANIM_Q, didi: KC_ANIM_DIDI }[KC_BODY_ANIMMAP[bodyName]] || KC_ANIM;
     this.mixer = new THREE.AnimationMixer(model);
     this.actions = {};
     src.animations.forEach(c => { this.actions[c.name] = this.mixer.clipAction(c); });
