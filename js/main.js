@@ -175,6 +175,16 @@ window.KC = window.KC || {};
   // ---------- online friend mode (PeerJS cloud signaling, free public server) ----------
   const onlineStatus = t => { el('online-status').textContent = t; };
   el('friend-btn').onclick = () => el('online-panel').classList.toggle('hidden');
+  el('join-btn').onclick = () => {
+    const code = el('join-code').value.toUpperCase().trim();
+    if (code.length !== 6) { onlineStatus('Enter the 6-letter room code.'); return; }
+    onlineStatus('Joining room ' + code + '...');
+    KC.Online.join(code, res => {
+      if (!res.ok) { onlineStatus('Could not join: ' + res.error); return; }
+      online.role = 'guest';
+      onlineStatus('Connected! Pick your neta and hit FIGHT.');
+    });
+  };
   el('host-btn').onclick = () => {
     onlineStatus('Creating room...');
     KC.Online.host(res => {
