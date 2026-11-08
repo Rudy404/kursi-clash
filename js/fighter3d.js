@@ -261,6 +261,9 @@ const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', pu
 /* per-body material-name recolor (bodies whose meshes are not <Prefix>_Body/Legs/Feet) */
 const KC_BODY_MATRECOLOR = { womandress: { Dress: 'kurta', Shoes: 'chappal' } };
 
+/* bodies whose clothing texture (plaid etc.) fights dark identity colors: drop the map when recoloring */
+const KC_BODY_FLATTEN = { worker: true };
+
 const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat|throw/i;
 
 /* per-body silhouette tuning so realistic bodies keep coherent caricature proportions */
@@ -296,6 +299,9 @@ KC.GLBFighter = class {
         const matKeep = /^(Skin|Eye|Eyebrows|Hair)/i;
         const part = /_(Body|Legs|Pants|Feet)(_[0-9]+)?$/.exec(o.name);
         const matMap = (typeof KC_BODY_MATRECOLOR !== 'undefined' && KC_BODY_MATRECOLOR[bodyName]) || null;
+        if (KC_BODY_FLATTEN[bodyName] && (matMap ? matMap[o.material.name] : part) && o.material.map) {
+          o.material.map = null; o.material.needsUpdate = true;
+        }
         if (matMap && matMap[o.material.name]) {
           o.material.color.set(fdef[matMap[o.material.name]]);
         } else if (part && o.material.name && !matKeep.test(o.material.name)) {

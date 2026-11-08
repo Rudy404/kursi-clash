@@ -97,6 +97,13 @@ KC.Stage = class {
         h.position.set(cxp, 1.3 + (i % 4) * 0.15, czp); this.group.add(h);
       }
       box(26, 0.3, 0.4, 0x8a8a8a, 0, 0.15, -4.8); // curb
+      // signature red-and-cream yantra geometry rising behind the chowk (original)
+      for (const [yx, yy, s, ry] of [[-9.5, 2.2, 4.4, 0.5], [9.5, 2.2, 4.4, -0.5], [0, 3.0, 5.6, 0]]) {
+        const tri = new THREE.Mesh(new THREE.ConeGeometry(s * 0.55, s, 4), mat(0xb3402a));
+        tri.position.set(yx, yy, -10); tri.rotation.y = ry; tri.castShadow = true; this.group.add(tri);
+        const trim = new THREE.Mesh(new THREE.ConeGeometry(s * 0.57, s * 0.16, 4), mat(0xe8dcc0));
+        trim.position.set(yx, yy + s * 0.42, -10); trim.rotation.y = ry; this.group.add(trim);
+      }
     } else {
       // highway dusk: road, toll booth, skyline
       box(30, 0.08, 5.5, 0x33333a, 0, 0.05, 1.5);
@@ -113,6 +120,14 @@ KC.Stage = class {
       // moon
       const moon = new THREE.Mesh(new THREE.SphereGeometry(0.9, 14, 14), mat(0xfff3c4, { emissive: 0xffe9a0, emissiveIntensity: 0.7 }));
       moon.position.set(7, 8.5, -12); this.group.add(moon);
+      // overhead highway sign gantry (original)
+      cyl(0.09, 0.09, 5.2, 0x777777, -4.5, 2.6, -2.6);
+      cyl(0.09, 0.09, 5.2, 0x777777, 4.5, 2.6, -2.6);
+      box(9.6, 0.25, 0.25, 0x777777, 0, 5.2, -2.6);
+      box(3.4, 1.5, 0.12, 0x1a6b3c, -2.2, 4.3, -2.6);
+      box(3.4, 1.5, 0.12, 0x1a6b3c, 2.4, 4.3, -2.6);
+      box(0.5, 0.5, 0.14, 0xffd23f, -2.2, 4.9, -2.6);
+      box(0.5, 0.5, 0.14, 0xffd23f, 2.4, 4.9, -2.6);
       // street lights
       for (const sx of [-6, 0, 6]) {
         cyl(0.07, 0.07, 4.2, 0x555555, sx, 2.1, -3.5);
@@ -137,14 +152,14 @@ KC.Camera = class {
     // plus margin for arm reach and impact FX; cinematic zooms pass distOverride.
     const tanH = Math.tan((this.cam.fov * Math.PI / 180) / 2) * this.cam.aspect;
     const wantDist = distOverride !== undefined ? distOverride :
-      (this.portrait ? KC.util.clamp((sep / 2 + 0.9) / Math.max(tanH, 0.05), 5.2, 21)
+      (this.portrait ? KC.util.clamp((sep / 2 + 0.65) / Math.max(tanH, 0.05), 4.6, 21)
                      : KC.util.clamp(sep * 0.9 + 5.5, 7, 13));
     this.dist = KC.util.lerp(this.dist, wantDist, 1 - Math.pow(0.001, dt));
     this.focusX = KC.util.lerp(this.focusX, mid, 1 - Math.pow(0.0005, dt));
     this.shake = Math.max(0, this.shake - dt * 1.4);
     const sx = (Math.random() - 0.5) * this.shake, sy = (Math.random() - 0.5) * this.shake;
-    const baseY = this.portrait ? 2.3 : this.baseY;
-    const lookY = this.portrait ? 1.35 : 1.6;
+    const baseY = this.portrait ? 2.1 : this.baseY;
+    const lookY = this.portrait ? 1.25 : 1.6;
     this.cam.position.set(this.focusX + sx, baseY + sy, this.dist);
     this.cam.lookAt(this.focusX + sx, lookY + sy, 0);
   }

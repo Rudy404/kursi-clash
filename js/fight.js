@@ -38,6 +38,11 @@ KC.Fight = class {
     this.events = [];
   }
 
+  dispose() {
+    this.scene.remove(this.p1.f3d.root);
+    this.scene.remove(this.p2.f3d.root);
+  }
+
   hitstop(t) { this._hitstop = Math.max(this._hitstop, t); }
   slowmo(s) { this.timeScale = s; }
 
