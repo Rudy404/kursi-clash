@@ -170,7 +170,13 @@ window.KC = window.KC || {};
   });
 
   // ---------- screen wiring ----------
-  el('notice-ok').onclick = () => { only('title'); KC.Audio._ensure(); };
+  el('notice-ok').onclick = () => {
+    KC.Audio._ensure();
+    const btn = el('notice-ok');
+    btn.disabled = true; btn.textContent = 'LOADING NETAS... 0%';
+    KC.FighterAssets.preload(p => { btn.textContent = 'LOADING NETAS... ' + Math.round(p * 100) + '%'; })
+      .then(() => only('title'));
+  };
   el('title').onclick = () => only('select');
   // ---------- online friend mode (PeerJS cloud signaling, free public server) ----------
   const onlineStatus = t => { el('online-status').textContent = t; };

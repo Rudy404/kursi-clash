@@ -1,7 +1,7 @@
 /* KURSI CLASH - fighter3d: low-poly cartoon neta rig + procedural animation. Original art direction: big-head desi mascots. */
 window.KC = window.KC || {};
 
-KC.Fighter3D = class {
+KC.BoxFighter = class {
   constructor(fdef, faceLeft) {
     this.def = fdef;
     const g = new THREE.Group();
@@ -142,4 +142,155 @@ KC.Fighter3D = class {
     this.root.position.y = this.baseY + t.y + (state ? state.liftY : 0);
     if (p >= 1 && !['idle', 'walk', 'ko', 'win', 'lose', 'block', 'air'].includes(a)) this.play('idle');
   }
+};
+
+/* ---------- GLB bodies: CC0 KayKit Adventurers + original caricature box heads ---------- */
+KC.FighterAssets = {
+  BODIES: {
+    barbarian: 'assets/models/Barbarian.glb',
+    knight: 'assets/models/Knight.glb',
+    mage: 'assets/models/Mage.glb',
+    rogue: 'assets/models/Rogue.glb',
+    hooded: 'assets/models/Rogue_Hooded.glb'
+  },
+  cache: {}, ready: false, failed: 0,
+  preload(onProgress) {
+    const names = Object.keys(this.BODIES);
+    let done = 0;
+    const loader = new THREE.GLTFLoader();
+    return Promise.all(names.map(n => new Promise(res => {
+      loader.load(this.BODIES[n], g => { this.cache[n] = g; done++; onProgress && onProgress(done / names.length); res(); },
+        undefined, () => { this.failed++; done++; onProgress && onProgress(done / names.length); res(); });
+    }))).then(() => { this.ready = true; });
+  }
+};
+
+const KC_BODY_MAP = {
+  chaiboss: 'barbarian', yatrayodha: 'knight', dididhamaka: 'hooded', tariffchacha: 'mage',
+  bulldozerbaba: 'barbarian', highwayman: 'rogue', starneta: 'knight', railrustom: 'barbarian',
+  chanakyaboss: 'mage', mufflerman: 'hooded', factbhai: 'rogue', mahabapu: 'barbarian'
+};
+
+const KC_ANIM = {
+  idle:      { clip: 'Idle', loop: true },
+  walk:      { clip: 'Running_A', loop: true, ts: 1.15 },
+  block:     { clip: 'Blocking', loop: true },
+  win:       { clip: 'Cheer', loop: true },
+  punch:     { clip: ['Unarmed_Melee_Attack_Punch_A', 'Unarmed_Melee_Attack_Punch_B'] },
+  kick:      { clip: 'Unarmed_Melee_Attack_Kick' },
+  grab:      { clip: 'Throw' },
+  hurt:      { clip: 'Hit_A' },
+  hit:       { clip: 'Hit_A' },
+  sweep:     { clip: 'Unarmed_Melee_Attack_Kick' },
+  launched:  { clip: 'Hit_B' },
+  air:       { clip: 'Jump_Idle', loop: true },
+  supercast: { clip: 'Spellcast_Raise' },
+  super:     { clip: '2H_Melee_Attack_Spin' },
+  swing:     { clip: '2H_Melee_Attack_Slice' },
+  intro:     { clip: 'Jump_Full_Short' },
+  ko:        { clip: 'Death_A', hold: true },
+  lose:      { clip: 'Death_B', hold: true }
+};
+
+const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat/i;
+
+KC.GLBFighter = class {
+  constructor(fdef, faceLeft) {
+    this.def = fdef;
+    const bodyName = KC_BODY_MAP[fdef.id] || 'knight';
+    const src = KC.FighterAssets.cache[bodyName];
+    this.root = new THREE.Group();
+    const model = THREE.SkeletonUtils.clone(src.scene);
+    this.model = model;
+
+    // materials: clone + tint lightly toward fighter identity color
+    const kurta = new THREE.Color(fdef.kurta);
+    model.traverse(o => {
+      if (o.isMesh || o.isSkinnedMesh) {
+        o.castShadow = true;
+        o.frustumCulled = false; // skinned meshes can vanish when bones leave the static bounds
+        if (KC_HIDE_RE.test(o.name)) { o.visible = false; return; }
+        o.material = o.material.clone();
+        if (o.material.color) o.material.color.lerp(kurta, 0.22);
+      }
+    });
+
+    // normalize height to ~2.0 world units, feet at y=0
+    const bb = new THREE.Box3().setFromObject(model);
+    const h = bb.max.y - bb.min.y || 1;
+    const s = 2.0 / h;
+    model.scale.setScalar(s);
+    model.position.y = -bb.min.y * s;
+    if (fdef.id === 'mahabapu') model.scale.multiplyScalar(1.25);
+    this.root.add(model);
+
+    // caricature box head mounted on the head bone (keeps neta identity + follows animation)
+    this.headBone = model.getObjectByName('head');
+    if (this.headBone) {
+      const skin = new THREE.MeshStandardMaterial({ color: fdef.skin, roughness: 0.85 });
+      const face = new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(KC.Faces.get(fdef)), roughness: 0.85 });
+      const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.52),
+        [skin, skin, skin, skin, face, skin]);
+      headMesh.castShadow = true;
+      this.headBone.add(headMesh);
+      // bone-space: position/scale so the head sits where the hidden head was
+      const bw = new THREE.Vector3();
+      this.headBone.getWorldPosition(bw);
+      const scaleFix = 1 / (s * (fdef.id === 'mahabapu' ? 1.25 : 1));
+      headMesh.scale.setScalar(scaleFix);
+      headMesh.position.set(0, 0.30 * (1 / scaleFix) * 0.55, 0.05);
+    }
+
+    this.mixer = new THREE.AnimationMixer(model);
+    this.actions = {};
+    src.animations.forEach(c => { this.actions[c.name] = this.mixer.clipAction(c); });
+    this.current = null;
+    this.punchFlip = false;
+    this.facing = faceLeft ? -1 : 1;
+    this.root.rotation.y = faceLeft ? -Math.PI / 2 + 0.55 : Math.PI / 2 - 0.55;
+    this.anim = 'idle'; this.animT = 0; this.animDur = 0; this.t = 0;
+    this.baseY = 0;
+    this._playMapped('idle');
+    this.mixer.addEventListener('finished', () => {
+      const m = KC_ANIM[this.anim];
+      if (m && !m.loop && !m.hold) this.play('idle');
+    });
+  }
+
+  _playMapped(name, dur) {
+    const m = KC_ANIM[name] || KC_ANIM.idle;
+    let clipName = Array.isArray(m.clip) ? m.clip[this.punchFlip ? 1 : 0] : m.clip;
+    if (Array.isArray(m.clip)) this.punchFlip = !this.punchFlip;
+    const next = this.actions[clipName];
+    if (!next) return;
+    next.reset();
+    if (m.loop) { next.setLoop(THREE.LoopRepeat, Infinity); }
+    else { next.setLoop(THREE.LoopOnce, 1); next.clampWhenFinished = true; }
+    let ts = m.ts || 1;
+    const clipDur = next.getClip().duration;
+    if (!m.loop && dur && clipDur > 0) ts = clipDur / dur;
+    next.timeScale = ts;
+    if (this.current && this.current !== next) { next.crossFadeFrom(this.current, 0.08, false); }
+    next.play();
+    this.current = next;
+  }
+
+  play(name, dur) {
+    if (name === this.anim && (KC_ANIM[name] || {}).loop) return;
+    this.anim = name; this.animT = 0; this.animDur = dur || 0.4;
+    this._playMapped(name, dur);
+  }
+
+  update(dt, state) {
+    this.t += dt; this.animT += dt;
+    this.mixer.update(dt);
+    this.root.position.y = this.baseY + (state ? state.liftY : 0);
+  }
+};
+
+/* factory: GLB body when assets are ready, box-man fallback otherwise */
+KC.Fighter3D = function (fdef, faceLeft) {
+  const body = KC_BODY_MAP[fdef.id];
+  if (KC.FighterAssets.ready && body && KC.FighterAssets.cache[body]) return new KC.GLBFighter(fdef, faceLeft);
+  return new KC.BoxFighter(fdef, faceLeft);
 };
