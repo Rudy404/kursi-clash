@@ -222,6 +222,7 @@ window.KC = window.KC || {};
     game.commentary.stopAll();
     game.fight = new KC.Fight(scene, stage, state.p1, state.p2, role === 'host' ? 'friend' : 'puppet', state.difficulty);
     online.active = true;
+    el('touch-ui').classList.add('ingame');
     if (role === 'host') game.fight.startRound();
     else { game.fight.phase = 'intro'; KC.game.hud.show(state.p1, state.p2, 0, 0); }
     resize();
@@ -246,11 +247,12 @@ window.KC = window.KC || {};
     startFight();
   };
   el('rematch-btn').onclick = () => startFight();
-  el('change-btn').onclick = () => { only('select'); game.hud.hide(); };
+  el('change-btn').onclick = () => { only('select'); game.hud.hide(); el('touch-ui').classList.remove('ingame'); };
   el('pause-btn').onclick = () => togglePause();
   el('resume-btn').onclick = () => togglePause();
   el('quit-btn').onclick = () => {
     paused = false; hide('pause-menu');
+    el('touch-ui').classList.remove('ingame');
     if (online.active) { online.active = false; KC.Online.close(); online.role = null; onlineStatus(''); }
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
@@ -271,6 +273,7 @@ window.KC = window.KC || {};
   function startFight() {
     const stage = KC.STAGES[state.selStage];
     only('hud');
+    el('touch-ui').classList.add('ingame');
     setStage(stage);
     game.commentary.stopAll();
     game.fight = new KC.Fight(scene, stage, state.p1, state.p2, 'cpu', state.difficulty);
