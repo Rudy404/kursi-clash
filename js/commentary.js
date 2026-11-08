@@ -23,6 +23,7 @@ KC.Commentary = class {
     this._pendingEvent = null;
     this._subT = null;
     this._lastLocal = 0;
+    this._gen = 0;
     if (window.speechSynthesis) {
       speechSynthesis.getVoices();
       speechSynthesis.onvoiceschanged = () => { this._voices = null; };
@@ -55,7 +56,7 @@ KC.Commentary = class {
   say(persona, text, opts) {
     if (this.muted) return;
     this._queue.push({ persona, text, opts: opts || {} });
-    if (this._queue.length > 4) this._queue.splice(0, this._queue.length - 4);
+    if (this._queue.length > 8) this._queue.splice(0, this._queue.length - 8);
     this._pump();
   }
 
@@ -74,13 +75,14 @@ KC.Commentary = class {
     const hardMs = Math.max(5000, item.text.length * 110);
     const t0 = performance.now();
     let speechEnded = false, advanced = false, fb = null;
+    const gen = this._gen;
     const done = () => {
-      if (advanced) return; advanced = true;
+      if (advanced || gen !== this._gen) return; advanced = true;
       if (fb) clearTimeout(fb);
       this._speaking = false; setTimeout(() => this._pump(), 150);
     };
     const tick = () => {
-      if (advanced) return;
+      if (advanced || gen !== this._gen) return;
       const el2 = performance.now() - t0;
       if ((speechEnded && el2 >= minMs) || el2 >= hardMs) return done();
       fb = setTimeout(tick, 150);
@@ -153,6 +155,7 @@ KC.Commentary = class {
   }
 
   stopAll() {
+    this._gen++;
     this._queue.length = 0;
     if (window.speechSynthesis) try { speechSynthesis.cancel(); } catch (e) {}
     this._speaking = false;
