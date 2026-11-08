@@ -129,11 +129,16 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0b0620;
 .tbtn.super { background:rgba(55,200,245,.9); }
 .tbtn:active { transform:translateY(2px); box-shadow:0 1px 0 var(--ink); }
 
+#skip-hint { position:absolute; top:calc(104px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
+  color:#ffe9b0; font-family:Arial; font-size:11px; letter-spacing:1px; opacity:.85; z-index:14; pointer-events:none; }
+#skip-hint.hidden { display:none; }
+
 @media (max-width:900px) {
   .fighter-info { max-width:44vw; padding:7px 9px; }
   .fighter-info h3 { font-size:12px; }
   .fighter-info .fsuper { font-size:9px; }
-  #banter-bar { display:none; }
+  /* subtitles matter on phones: float the banter bar above the shakti row instead of hiding it */
+  #banter-bar { position:absolute; bottom:calc(64px + env(safe-area-inset-bottom)); left:8px; right:8px; max-width:none; z-index:14; }
 }
 
 /* online friend panel */

@@ -64,11 +64,14 @@ KC.Fight = class {
     const rk = [this.p1.def.name, this.p2.def.name].sort().join('|');
     const rb = this.round === 1 && KC.rivalBanter && KC.rivalBanter[rk];
     this._introDur = 1.6;
-    if (rb) { rb.slice(0, 4).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introDur = 6.5; }
+    this._introWait = false;
+    if (rb) { rb.slice(0, 5).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introWait = true; }
     else {
       com.say('A', KC.util.pick(this.p1.def.intro));
       com.say('B', KC.util.pick(this.p2.def.intro));
     }
+    const sh = document.getElementById('skip-hint');
+    if (sh) sh.classList.toggle('hidden', !this._introWait);
     com.local('intro', { f1: this.p1.def, f2: this.p2.def });
     if (this.round === 1) com.aiMoment('intro', { f: this.p1.def, detail: this.p1.def.name + ' versus ' + this.p2.def.name + ', round 1 of a satirical political fighting game' });
   }
@@ -252,7 +255,19 @@ KC.Fight = class {
     if (this.phase === 'intro') {
       this.phaseT += dt;
       this.p1.f3d.update(dt, this.p1); this.p2.f3d.update(dt, this.p2);
-      if (this.phaseT > (this._introDur || 1.6)) { this.phase = 'fight'; KC.game.hud.splash('FIGHT!', 800); }
+      // round-1 banter: intro ends when the pre-fight queue drains (bounded, skippable)
+      let done = this.phaseT > (this._introDur || 1.6);
+      if (this._introWait) {
+        const c = KC.game.commentary;
+        const queueBusy = c._queue.length > 0 || c._speaking;
+        const skip = input1.punch || input1.kick || input1.grab;
+        done = this.phaseT > 2.5 && (!queueBusy || this.phaseT > 20 || skip);
+      }
+      if (done) {
+        this.phase = 'fight'; KC.game.hud.splash('FIGHT!', 800);
+        const sh = document.getElementById('skip-hint');
+        if (sh) sh.classList.add('hidden');
+      }
       return;
     }
     if (this.phase === 'roundEnd') {
