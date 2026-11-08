@@ -201,7 +201,7 @@ const KC_ANIM = {
 const KC_ANIM_Q = {
   idle:      { clip: 'CharacterArmature|Idle_Neutral', loop: true },
   walk:      { clip: 'CharacterArmature|Run', loop: true, ts: 1.1 },
-  block:     { clip: 'CharacterArmature|Idle_Gun', loop: true },
+  block:     { clip: 'CharacterArmature|Idle_Sword', loop: true },
   win:       { clip: 'CharacterArmature|Wave', loop: true },
   punch:     { clip: ['CharacterArmature|Punch_Right', 'CharacterArmature|Punch_Left'] },
   kick:      { clip: ['CharacterArmature|Kick_Right', 'CharacterArmature|Kick_Left'] },
