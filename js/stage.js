@@ -106,13 +106,22 @@ KC.Camera = class {
   follow(ax, bx, dt, midOverride, distOverride) {
     const mid = midOverride !== undefined ? midOverride : (ax + bx) / 2;
     const wantDist = distOverride !== undefined ? distOverride :
-      KC.util.clamp(Math.abs(ax - bx) * 0.9 + 5.5, 7, 13);
+      (this.portrait ? KC.util.clamp(Math.abs(ax - bx) * 0.9 + 7.5, 9.5, 15)
+                     : KC.util.clamp(Math.abs(ax - bx) * 0.9 + 5.5, 7, 13));
     this.dist = KC.util.lerp(this.dist, wantDist, 1 - Math.pow(0.001, dt));
     this.focusX = KC.util.lerp(this.focusX, mid, 1 - Math.pow(0.0005, dt));
     this.shake = Math.max(0, this.shake - dt * 1.4);
     const sx = (Math.random() - 0.5) * this.shake, sy = (Math.random() - 0.5) * this.shake;
-    this.cam.position.set(this.focusX + sx, this.baseY + sy, this.dist);
-    this.cam.lookAt(this.focusX + sx, 1.6 + sy, 0);
+    const baseY = this.portrait ? 3.0 : this.baseY;
+    const lookY = this.portrait ? 2.0 : 1.6;
+    this.cam.position.set(this.focusX + sx, baseY + sy, this.dist);
+    this.cam.lookAt(this.focusX + sx, lookY + sy, 0);
   }
-  resize(w, h) { this.cam.aspect = w / h; this.cam.updateProjectionMatrix(); }
+  resize(w, h) {
+    const a = w / h;
+    this.cam.aspect = a;
+    this.portrait = a < 0.9;
+    this.cam.fov = this.portrait ? 72 : 38;
+    this.cam.updateProjectionMatrix();
+  }
 };

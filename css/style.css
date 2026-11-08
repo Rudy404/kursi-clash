@@ -160,3 +160,14 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0b0620;
   .select-actions { margin-top:22px; }
   .select-actions .act-btn { font-size:20px; padding:14px 34px; }
 }
+
+/* portrait phones: rotate hint + readable HUD */
+#rotate-hint { display:none; position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:60;
+  background:rgba(20,12,4,.9); border:2px solid var(--gold); color:#ffe9b0; border-radius:10px;
+  padding:6px 12px; font-size:13px; letter-spacing:.4px; pointer-events:none; }
+@media (pointer:coarse) and (orientation:portrait) {
+  #rotate-hint { display:block; }
+  .hud-name { font-size:13px !important; }
+  #news-ticker, .ticker-text { font-size:13px !important; }
+  .shakti-label { font-size:11px !important; }
+}
