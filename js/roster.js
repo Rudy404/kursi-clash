@@ -96,7 +96,7 @@ KC.ROSTER = [
   {
     id: 'railrustom', name: 'RAIL RUSTOM', team: 'Team Platform 9',
     skin: 0xd9a878, hair: 'curly', beard: 'white', glasses: false,
-    kurta: 0xf2ede2, pants: 0xf2ede2, chappal: 0x6b4a2a,
+    kurta: 0x3a5a8c, pants: 0x2c3e50, chappal: 0x6b4a2a,
     desc: 'Runs a railway, a state and his mouth. All on time.',
     supers: [
       { name: 'GARIB RATH GAUNTLET', dmg: 30, desc: 'A spectral train of pure jugaad runs the opponent over. 30%.' },
