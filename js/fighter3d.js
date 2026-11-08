@@ -187,7 +187,7 @@ const KC_BODY_MAP = {
   yatrayodha: 'knight', dididhamaka: 'hooded',
   bulldozerbaba: 'barbarian', highwayman: 'worker', starneta: 'business', railrustom: 'barbarian',
   chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'barbarian',
-  chaiboss: 'king', tariffchacha: 'king'
+  chaiboss: 'worker', tariffchacha: 'business'
 };
 
 const KC_ANIM = {
