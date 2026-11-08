@@ -107,6 +107,14 @@ KC.Head3D = {
     if (f.id === 'chaiboss') { // chai-stain kurta legend: small chai glass in ear? no - tilak
       add(new THREE.BoxGeometry(0.03, 0.09, 0.015), M(0xd43a2a, 0.6), 0, 0.47, 0.315);
     }
+    if (f.id === 'bulldozerbaba') { // rudraksha mala + tilak
+      const beads = M(0x6b3a1a, 0.7);
+      for (let i = 0; i < 9; i++) {
+        const a = (i / 9) * Math.PI * 2;
+        add(sph(6, 5), beads, Math.sin(a) * 0.20, -0.16 - Math.cos(a) * 0.05, 0.06 + Math.cos(a) * 0.14, 0.035, 0.035, 0.035);
+      }
+      add(new THREE.BoxGeometry(0.035, 0.10, 0.015), M(0xd43a2a, 0.6), 0, 0.47, 0.315);
+    }
     return g;
   }
 };

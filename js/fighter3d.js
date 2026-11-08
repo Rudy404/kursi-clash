@@ -153,6 +153,7 @@ KC.FighterAssets = {
     rogue: 'assets/models/Rogue.glb',
     hooded: 'assets/models/Rogue_Hooded.glb',
     business: 'assets/models/BusinessMan.glb',
+    farmer: 'assets/models/Farmer.glb',
     worker: 'assets/models/Worker.glb',
     king: 'assets/models/King.glb',
     hoodie: 'assets/models/Hoodie.glb',
@@ -186,7 +187,7 @@ KC.FighterAssets = {
 
 const KC_BODY_MAP = {
   yatrayodha: 'knight', dididhamaka: 'womandress',
-  bulldozerbaba: 'barbarian', highwayman: 'worker', starneta: 'business', railrustom: 'barbarian',
+  bulldozerbaba: 'farmer', highwayman: 'worker', starneta: 'business', railrustom: 'barbarian',
   chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'barbarian',
   chaiboss: 'worker', tariffchacha: 'business'
 };
@@ -255,7 +256,7 @@ const KC_ANIM_DIDI = {
   lose:      { clip: 'HumanArmature|Female_Death', hold: true, ts: 0.7 }
 };
 
-const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q', womandress: 'didi' };
+const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q', farmer: 'q', womandress: 'didi' };
 
 /* per-body material-name recolor (bodies whose meshes are not <Prefix>_Body/Legs/Feet) */
 const KC_BODY_MATRECOLOR = { womandress: { Dress: 'kurta', Shoes: 'chappal' } };
@@ -269,7 +270,8 @@ const KC_BODY_TUNE = {
   king: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   hoodie: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   punk: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
-  womandress: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
+  womandress: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  farmer: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
 };
 
 KC.GLBFighter = class {
@@ -292,12 +294,12 @@ KC.GLBFighter = class {
         // identity clothing: recolor the clothing primitives to roster colors,
         // never skin/eyes/hair; other meshes keep the light identity tint
         const matKeep = /^(Skin|Eye|Eyebrows|Hair)/i;
-        const part = /_(Body|Legs|Feet)(_[0-9]+)?$/.exec(o.name);
+        const part = /_(Body|Legs|Pants|Feet)(_[0-9]+)?$/.exec(o.name);
         const matMap = (typeof KC_BODY_MATRECOLOR !== 'undefined' && KC_BODY_MATRECOLOR[bodyName]) || null;
         if (matMap && matMap[o.material.name]) {
           o.material.color.set(fdef[matMap[o.material.name]]);
         } else if (part && o.material.name && !matKeep.test(o.material.name)) {
-          const tgt = part[1] === 'Body' ? fdef.kurta : part[1] === 'Legs' ? fdef.pants : fdef.chappal;
+          const tgt = part[1] === 'Body' ? fdef.kurta : (part[1] === 'Legs' || part[1] === 'Pants') ? fdef.pants : fdef.chappal;
           o.material.color.set(tgt);
         } else if (o.material.color) o.material.color.lerp(kurta, 0.22);
       }
