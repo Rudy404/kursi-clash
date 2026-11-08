@@ -151,7 +151,8 @@ KC.FighterAssets = {
     knight: 'assets/models/Knight.glb',
     mage: 'assets/models/Mage.glb',
     rogue: 'assets/models/Rogue.glb',
-    hooded: 'assets/models/Rogue_Hooded.glb'
+    hooded: 'assets/models/Rogue_Hooded.glb',
+    business: 'assets/models/BusinessMan.glb'
   },
   cache: {}, ready: false, failed: 0,
   preload(onProgress) {
@@ -167,8 +168,8 @@ KC.FighterAssets = {
 
 const KC_BODY_MAP = {
   chaiboss: 'barbarian', yatrayodha: 'knight', dididhamaka: 'hooded', tariffchacha: 'mage',
-  bulldozerbaba: 'barbarian', highwayman: 'rogue', starneta: 'knight', railrustom: 'barbarian',
-  chanakyaboss: 'mage', mufflerman: 'hooded', factbhai: 'rogue', mahabapu: 'barbarian'
+  bulldozerbaba: 'barbarian', highwayman: 'rogue', starneta: 'business', railrustom: 'barbarian',
+  chanakyaboss: 'business', mufflerman: 'hooded', factbhai: 'rogue', mahabapu: 'barbarian'
 };
 
 const KC_ANIM = {
@@ -191,6 +192,29 @@ const KC_ANIM = {
   ko:        { clip: 'Death_A', hold: true },
   lose:      { clip: 'Death_B', hold: true }
 };
+
+const KC_ANIM_Q = {
+  idle:      { clip: 'CharacterArmature|Idle_Neutral', loop: true },
+  walk:      { clip: 'CharacterArmature|Run', loop: true, ts: 1.1 },
+  block:     { clip: 'CharacterArmature|Idle_Gun', loop: true },
+  win:       { clip: 'CharacterArmature|Wave', loop: true },
+  punch:     { clip: ['CharacterArmature|Punch_Right', 'CharacterArmature|Punch_Left'] },
+  kick:      { clip: ['CharacterArmature|Kick_Right', 'CharacterArmature|Kick_Left'] },
+  grab:      { clip: 'CharacterArmature|Interact' },
+  hurt:      { clip: 'CharacterArmature|HitRecieve' },
+  hit:       { clip: 'CharacterArmature|HitRecieve' },
+  sweep:     { clip: 'CharacterArmature|Kick_Left' },
+  launched:  { clip: 'CharacterArmature|HitRecieve_2' },
+  air:       { clip: 'CharacterArmature|Roll' },
+  supercast: { clip: 'CharacterArmature|Interact' },
+  super:     { clip: 'CharacterArmature|Sword_Slash' },
+  swing:     { clip: 'CharacterArmature|Sword_Slash' },
+  intro:     { clip: 'CharacterArmature|Wave' },
+  ko:        { clip: 'CharacterArmature|Death', hold: true },
+  lose:      { clip: 'CharacterArmature|Death', hold: true, ts: 0.7 }
+};
+
+const KC_BODY_ANIMMAP = { business: 'q' };
 
 const KC_HIDE_RE = /axe|shield|mug|sword|staff|wand|bow|arrow|dagger|knife|crossbow|quiver|head|helmet|hat/i;
 
@@ -225,7 +249,7 @@ KC.GLBFighter = class {
     this.root.add(model);
 
     // caricature box head mounted on the head bone (keeps neta identity + follows animation)
-    this.headBone = model.getObjectByName('head');
+    this.headBone = model.getObjectByName('head') || model.getObjectByName('Head');
     if (this.headBone) {
       const headMesh = KC.Head3D.build(fdef);
       this.headBone.add(headMesh);
@@ -236,6 +260,7 @@ KC.GLBFighter = class {
       headMesh.position.set(0, 0.10 * scaleFix, 0.06 * scaleFix);
     }
 
+    this.animMap = KC_BODY_ANIMMAP[bodyName] === 'q' ? KC_ANIM_Q : KC_ANIM;
     this.mixer = new THREE.AnimationMixer(model);
     this.actions = {};
     src.animations.forEach(c => { this.actions[c.name] = this.mixer.clipAction(c); });
@@ -247,13 +272,13 @@ KC.GLBFighter = class {
     this.baseY = 0;
     this._playMapped('idle');
     this.mixer.addEventListener('finished', () => {
-      const m = KC_ANIM[this.anim];
+      const m = this.animMap[this.anim];
       if (m && !m.loop && !m.hold) this.play('idle');
     });
   }
 
   _playMapped(name, dur) {
-    const m = KC_ANIM[name] || KC_ANIM.idle;
+    const m = this.animMap[name] || this.animMap.idle;
     let clipName = Array.isArray(m.clip) ? m.clip[this.punchFlip ? 1 : 0] : m.clip;
     if (Array.isArray(m.clip)) this.punchFlip = !this.punchFlip;
     const next = this.actions[clipName];
