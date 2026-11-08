@@ -262,7 +262,14 @@ KC.GLBFighter = class {
         o.frustumCulled = false; // skinned meshes can vanish when bones leave the static bounds
         if (KC_HIDE_RE.test(o.name)) { o.visible = false; return; }
         o.material = o.material.clone();
-        if (o.material.color) o.material.color.lerp(kurta, 0.22);
+        // identity clothing: recolor the clothing primitives to roster colors,
+        // never skin/eyes/hair; other meshes keep the light identity tint
+        const matKeep = /^(Skin|Eye|Eyebrows|Hair)/i;
+        const part = /_(Body|Legs|Feet)(_[0-9]+)?$/.exec(o.name);
+        if (part && o.material.name && !matKeep.test(o.material.name)) {
+          const tgt = part[1] === 'Body' ? fdef.kurta : part[1] === 'Legs' ? fdef.pants : fdef.chappal;
+          o.material.color.set(tgt);
+        } else if (o.material.color) o.material.color.lerp(kurta, 0.22);
       }
     });
 
