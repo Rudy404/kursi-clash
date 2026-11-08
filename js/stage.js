@@ -101,8 +101,8 @@ KC.Stage = class {
       for (const [yx, yy, s, ry] of [[-9.5, 2.2, 4.4, 0.5], [9.5, 2.2, 4.4, -0.5], [0, 3.0, 5.6, 0]]) {
         const tri = new THREE.Mesh(new THREE.ConeGeometry(s * 0.55, s, 4), mat(0xb3402a));
         tri.position.set(yx, yy, -10); tri.rotation.y = ry; tri.castShadow = true; this.group.add(tri);
-        const trim = new THREE.Mesh(new THREE.ConeGeometry(s * 0.57, s * 0.16, 4), mat(0xe8dcc0));
-        trim.position.set(yx, yy + s * 0.42, -10); trim.rotation.y = ry; this.group.add(trim);
+        const trim = new THREE.Mesh(new THREE.ConeGeometry(s * 0.45, s * 0.16, 4), mat(0xe8dcc0));
+        trim.position.set(yx, yy + s * 0.33, -10); trim.rotation.y = ry; this.group.add(trim);
       }
     } else {
       // highway dusk: road, toll booth, skyline
