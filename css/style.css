@@ -137,8 +137,8 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0b0620;
   .fighter-info { max-width:44vw; padding:7px 9px; }
   .fighter-info h3 { font-size:12px; }
   .fighter-info .fsuper { font-size:9px; }
-  /* subtitles matter on phones: float the banter bar under the health bars, clear of touch controls */
-  #banter-bar { position:absolute; top:calc(96px + env(safe-area-inset-top)); left:8px; right:8px; max-width:none; z-index:14; }
+  /* subtitles matter on phones: float the banter bar under the health bars, clear of touch controls (fixed: .hud-bottom is the positioned ancestor) */
+  #banter-bar { position:fixed; top:calc(96px + env(safe-area-inset-top)); left:8px; right:8px; max-width:none; z-index:14; }
 }
 
 /* online friend panel */
