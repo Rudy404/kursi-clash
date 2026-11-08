@@ -73,6 +73,7 @@ window.KC = window.KC || {};
     if (k === 'u') input1.super = 0;
     if (k === 'i') input1.super = 1;
     if (k === 'o' || k === 'l') input1.super = 2;
+    if (k === 'p') input1.super = 3; // bonus strike super
     if (k === 'enter' && el('title').classList.contains('visible')) only('select');
     if (k === 'escape' && game.fight && !game.fight.over) togglePause();
   });
@@ -113,11 +114,16 @@ window.KC = window.KC || {};
   stickZone.addEventListener('touchcancel', stickEnd);
 
   // action buttons
+  let supAlt = false;
   document.querySelectorAll('#touch-buttons .tbtn').forEach(btn => {
     const b = btn.dataset.btn;
     const press = e => {
       e.preventDefault();
-      if (b === 'super') input1.super = 2; // signature cine super
+      if (b === 'super') { // signature cine super; alternates with the bonus strike super when available
+        const arr = (game.fight ? game.fight.p1.def : state.p1).supers;
+        supAlt = !supAlt;
+        input1.super = (arr.length > 3 && supAlt) ? 3 : 2;
+      }
       else input1[b] = 1;
     };
     btn.addEventListener('touchstart', press, { passive: false });
