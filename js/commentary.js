@@ -68,16 +68,24 @@ KC.Commentary = class {
     this.b2.textContent = item.text;
     clearTimeout(this._subT);
     this._subT = setTimeout(() => { this.b1.textContent = ''; this.b2.textContent = ''; }, Math.max(2600, item.text.length * 55));
-    // guaranteed advance: TTS onend when it works, a timer when speech is blocked,
-    // silent or gesture-gated (headless, some mobile browsers) - the queue must never stall.
-    let advanced = false;
-    let fb = null;
+    // pacing floor: every line displays at least minMs, advances when speech ends
+    // after that; hardMs guarantees progress if speech hangs or never starts.
+    const minMs = Math.max(2200, item.text.length * 40);
+    const hardMs = Math.max(5000, item.text.length * 110);
+    const t0 = performance.now();
+    let speechEnded = false, advanced = false, fb = null;
     const done = () => {
       if (advanced) return; advanced = true;
       if (fb) clearTimeout(fb);
       this._speaking = false; setTimeout(() => this._pump(), 150);
     };
-    fb = setTimeout(done, Math.max(2400, item.text.length * 40));
+    const tick = () => {
+      if (advanced) return;
+      const el2 = performance.now() - t0;
+      if ((speechEnded && el2 >= minMs) || el2 >= hardMs) return done();
+      fb = setTimeout(tick, 150);
+    };
+    fb = setTimeout(tick, 150);
     if (window.speechSynthesis && !this.muted) {
       try {
         const u = new SpeechSynthesisUtterance(item.text);
@@ -86,12 +94,11 @@ KC.Commentary = class {
         u.volume = 0.9;
         const v = this._pickVoice(cfg);
         if (v) u.voice = v;
-        // speech actually started: trust onend pacing, cancel the fallback
-        u.onstart = () => { if (fb) { clearTimeout(fb); fb = null; } };
-        u.onend = done; u.onerror = done;
+        u.onend = () => { speechEnded = true; };
+        u.onerror = () => { speechEnded = true; };
         speechSynthesis.speak(u);
-      } catch (e) { /* fallback timer carries the line */ }
-    }
+      } catch (e) { speechEnded = true; }
+    } else speechEnded = true;
   }
 
   local(kind, ctx) {
