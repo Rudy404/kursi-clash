@@ -1,84 +1,84 @@
 /* KURSI CLASH - rival banter + extra commentary, generated with Gemini 4 Argon, reviewed and original. */
 window.KC = window.KC || {};
 KC.rivalBanter = {
- "Chaiboss|Yatra Yodha": [
+ "CHAIBOSS|YATRA YODHA": [
   "Chaiboss: Beta, walk all you want, the kursi stays with me!",
   "Yatra Yodha: Your chai is cold, boss! My cardio will finish you!",
   "Chaiboss: Mitron, watch me turn his marathon into a short break!",
   "Yatra Yodha: I have walked across five states. Your stall, I will cross in one combo!",
   "Chaiboss: Arre, save your breath for the victory speech you will never give!"
  ],
- "Bulldozer Baba|Didi Dhamaka": [
+ "BULLDOZER BABA|DIDI DHAMAKA": [
   "Bulldozer Baba: Step aside Didi, my yellow machine clears all street blockades!",
   "Didi Dhamaka: Khela Hobe! Try parking that toy in my lane, Baba!",
   "Bulldozer Baba: No permit for your temper! Demolition starts in three seconds!",
   "Didi Dhamaka: I have sat in dharna through cyclones. Your engine noise is a lullaby!",
   "Bulldozer Baba: Cyclone? Wait till you meet my reverse gear!"
  ],
- "Highway Man|Rail Rustom": [
+ "HIGHWAY MAN|RAIL RUSTOM": [
   "Highway Man: Eight-lane expressway punch incoming! Pay the toll with your teeth!",
   "Rail Rustom: Your tarmac melts in monsoon! My iron engine never derails!",
   "Highway Man: Less whistling, Rustom! I am paving over your slow tracks!",
   "Rail Rustom: Platform nine has seen bigger jams than you, chhotu!",
   "Highway Man: Then let me widen your platform with this uppercut!"
  ],
- "Muffler Man|Star Neta": [
+ "MUFFLER MAN|STAR NETA": [
   "Star Neta: Blockbuster entry, baby! You brought a muffler to a climax?",
   "Muffler Man: Keep your scripts, hero! Common man wants free Wi-Fi, not autographs!",
   "Star Neta: Cut the drama! Even your cough sounds like bad dubbing!",
   "Muffler Man: My cough trends more honestly than your film career!",
   "Star Neta: Enough! Time for my award-winning knockout scene!"
  ],
- "Chanakya Boss|Fact Bhai": [
+ "CHANAKYA BOSS|FACT BHAI": [
   "Chanakya Boss: I already bought your health bar before the match started!",
   "Fact Bhai: Fake news! According to my data, your combo is unverified!",
   "Chanakya Boss: Check the sources later, nerd! My masterstroke is hundred percent real!",
   "Fact Bhai: My sources say your win probability is trending below room temperature!",
   "Chanakya Boss: Then let me heat things up with a little regime change!"
  ],
- "Chaiboss|Tariff Chacha": [
+ "CHAIBOSS|TARIFF CHACHA": [
   "Tariff Chacha: Fifty percent import duty on your special masala chai, friend!",
   "Chaiboss: Chacha, my local kettle needs no visa to boil your taxes!",
   "Tariff Chacha: Huge mistake! Now face the greatest trade-war uppercut in history!",
   "Chaiboss: Your deals are like decaf, Chacha. Loud label, no kick!",
   "Tariff Chacha: Reciprocal tariffs on that insult! Pay up, in teeth!"
  ],
- "Bulldozer Baba|Mahabapu": [
+ "BULLDOZER BABA|MAHABAPU": [
   "Bulldozer Baba: Bapu, your charkha is antique! My bulldozer spins faster!",
   "Mahabapu: Beta, empires bigger than your bulldozer have marched home quietly.",
   "Bulldozer Baba: Then prepare for a groundbreaking ceremony, old man!",
   "Mahabapu: I have fasted longer than your engine has run. Patience is my petrol!",
   "Bulldozer Baba: Diesel beats dal-chawal! Full throttle!"
  ],
- "Chaiboss|Didi Dhamaka": [
+ "CHAIBOSS|DIDI DHAMAKA": [
   "Chaiboss: Didi, have some chai and cool down, free of cost!",
   "Didi Dhamaka: I take my tea with two sugars and your resignation letter!",
   "Chaiboss: Arre Didi, why so angry? Did the morning walkers skip again?",
   "Didi Dhamaka: Your jokes are weaker than your chai, bhaijaan!",
   "Chaiboss: Okay okay! One kadak punch coming, extra strong, no sugar!"
  ],
- "Fact Bhai|Muffler Man": [
+ "FACT BHAI|MUFFLER MAN": [
   "Fact Bhai: Breaking: local man fights corruption and my patience simultaneously!",
   "Muffler Man: Verify this first: my right hook, live from your jaw!",
   "Fact Bhai: Your health bar's credibility is lower than a viral forward!",
   "Muffler Man: And your fact-checks are slower than government Wi-Fi!",
   "Fact Bhai: Correction issued: that was a left hook. It also hurts!"
  ],
- "Star Neta|Tariff Chacha": [
+ "STAR NETA|TARIFF CHACHA": [
   "Star Neta: Chacha, in my next blockbuster I play a tax officer. You are my research!",
   "Tariff Chacha: And in my next budget, your fan club gets a luxury tax!",
   "Star Neta: Please, my box office pays more tax than your entire ministry dreams of!",
   "Tariff Chacha: Then this match is a special audit, hero. No deductions allowed!",
   "Star Neta: Cut! Print! Audit this knockout, Chacha!"
  ],
- "Rail Rustom|Yatra Yodha": [
+ "RAIL RUSTOM|YATRA YODHA": [
   "Rail Rustom: Yatri, your padyatra ticket is not confirmed on my route!",
   "Yatra Yodha: Rustom, I need no reservation. My feet are my first class!",
   "Rail Rustom: Then travel standing, like everyone else! Full speed ahead!",
   "Yatra Yodha: Your trains run late. My punches are always on time!",
   "Rail Rustom: Signal green hai, Yodha! Derail ho ja!"
  ],
- "Highway Man|Mahabapu": [
+ "HIGHWAY MAN|MAHABAPU": [
   "Highway Man: My expressway cuts through everything, Bapu. Even your ashram!",
   "Mahabapu: Roads change, beta. The march goes on!",
   "Highway Man: March? On my highway, even bullock carts take the service lane!",
