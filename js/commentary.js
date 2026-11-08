@@ -28,7 +28,7 @@ KC.Commentary = class {
       speechSynthesis.onvoiceschanged = () => { this._voices = null; };
     }
     this.banks = {
-      intro: ['{f1} vs {f2} - DESHLIVE mein aapka swagat hai!', 'Bhai log, {f1} aur {f2} aa gaye hain ring mein!'],
+      intro: ['{f1} vs {f2} - DESH LIVE mein aapka swagat hai!', 'Bhai log, {f1} aur {f2} aa gaye hain ring mein!'],
       bigHit: ['OOOH! {f} ne kya maara!', 'Yeh hui na asli baat, {f}!', 'Desh dekhta jaa raha hai, {f}!'],
       combo: ['{n} hits back to back! {f} on fire!', '{f} ka combo chalu hai bhai, {n} hits!'],
       low: ['{f} ki haalat kharaab! Doctor ko bulao!', '{f} ki battery low, kursi jaati hui!'],
