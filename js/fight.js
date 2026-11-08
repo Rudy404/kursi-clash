@@ -64,7 +64,7 @@ KC.Fight = class {
     const rk = [this.p1.def.name, this.p2.def.name].sort().join('|');
     const rb = this.round === 1 && KC.rivalBanter && KC.rivalBanter[rk];
     this._introDur = 1.6;
-    if (rb) { rb.slice(0, 5).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introDur = 6.5; }
+    if (rb) { rb.slice(0, 4).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introDur = 6.5; }
     else {
       com.say('A', KC.util.pick(this.p1.def.intro));
       com.say('B', KC.util.pick(this.p2.def.intro));

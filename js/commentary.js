@@ -64,11 +64,20 @@ KC.Commentary = class {
     const item = this._queue.shift();
     this._speaking = true;
     const cfg = this.personas[item.persona];
-    const done = () => { this._speaking = false; setTimeout(() => this._pump(), 150); };
     this.b1.textContent = cfg.name.split(' ')[0] + ':';
     this.b2.textContent = item.text;
     clearTimeout(this._subT);
     this._subT = setTimeout(() => { this.b1.textContent = ''; this.b2.textContent = ''; }, Math.max(2600, item.text.length * 55));
+    // guaranteed advance: TTS onend when it works, a timer when speech is blocked,
+    // silent or gesture-gated (headless, some mobile browsers) - the queue must never stall.
+    let advanced = false;
+    let fb = null;
+    const done = () => {
+      if (advanced) return; advanced = true;
+      if (fb) clearTimeout(fb);
+      this._speaking = false; setTimeout(() => this._pump(), 150);
+    };
+    fb = setTimeout(done, Math.max(2400, item.text.length * 40));
     if (window.speechSynthesis && !this.muted) {
       try {
         const u = new SpeechSynthesisUtterance(item.text);
@@ -77,12 +86,12 @@ KC.Commentary = class {
         u.volume = 0.9;
         const v = this._pickVoice(cfg);
         if (v) u.voice = v;
+        // speech actually started: trust onend pacing, cancel the fallback
+        u.onstart = () => { if (fb) { clearTimeout(fb); fb = null; } };
         u.onend = done; u.onerror = done;
         speechSynthesis.speak(u);
-        return;
-      } catch (e) { /* fall through */ }
+      } catch (e) { /* fallback timer carries the line */ }
     }
-    setTimeout(done, Math.max(2000, item.text.length * 45));
   }
 
   local(kind, ctx) {
