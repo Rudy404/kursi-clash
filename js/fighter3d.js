@@ -229,16 +229,15 @@ KC.GLBFighter = class {
     if (this.headBone) {
       const skin = new THREE.MeshStandardMaterial({ color: fdef.skin, roughness: 0.85 });
       const face = new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(KC.Faces.get(fdef)), roughness: 0.85 });
-      const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.52),
+      const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.74),
         [skin, skin, skin, skin, face, skin]);
       headMesh.castShadow = true;
       this.headBone.add(headMesh);
-      // bone-space: position/scale so the head sits where the hidden head was
-      const bw = new THREE.Vector3();
-      this.headBone.getWorldPosition(bw);
+      // bone-space: counter the model scale so the head keeps an absolute world size,
+      // and lift it to sit where the hidden head was
       const scaleFix = 1 / (s * (fdef.id === 'mahabapu' ? 1.25 : 1));
       headMesh.scale.setScalar(scaleFix);
-      headMesh.position.set(0, 0.30 * (1 / scaleFix) * 0.55, 0.05);
+      headMesh.position.set(0, 0.42 * scaleFix, 0.06 * scaleFix);
     }
 
     this.mixer = new THREE.AnimationMixer(model);
