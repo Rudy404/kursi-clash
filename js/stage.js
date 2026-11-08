@@ -128,6 +128,11 @@ KC.Stage = class {
       box(2.2, 0.95, 0.13, 0x1a6b3c, 2.6, 6.8, -7.2);
       box(0.34, 0.34, 0.15, 0xffd23f, -2.6, 7.25, -7.2);
       box(0.34, 0.34, 0.15, 0xffd23f, 2.6, 7.25, -7.2);
+      // roadside direction sign (original), inside typical portrait framing
+      cyl(0.07, 0.07, 3.0, 0x666666, 2.7, 1.5, -3.0);
+      box(1.5, 0.9, 0.1, 0x1a6b3c, 2.7, 3.1, -3.0);
+      box(0.9, 0.16, 0.11, 0xffffff, 2.7, 3.25, -3.0);
+      box(0.5, 0.16, 0.11, 0xffffff, 2.55, 2.95, -3.0);
       // street lights
       for (const sx of [-6, 0, 6]) {
         cyl(0.07, 0.07, 4.2, 0x555555, sx, 2.1, -3.5);
