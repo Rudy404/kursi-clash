@@ -65,7 +65,10 @@ KC.Fight = class {
     const rb = this.round === 1 && KC.rivalBanter && KC.rivalBanter[rk];
     this._introDur = 1.6;
     this._introWait = false;
-    if (rb) { rb.slice(0, 7).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introWait = true; }
+    // boss finale gets the full 7-exchange cinematic intro; regular matchups keep
+    // it to 5 so every match doesn't make players wait (always skippable).
+    this._introBoss = this.p1.def.id === 'mahabapu' || this.p2.def.id === 'mahabapu';
+    if (rb) { rb.slice(0, this._introBoss ? 7 : 5).forEach((ln, i) => com.say(i % 2 ? 'B' : 'A', ln.replace(/^[^:]+:\s*/, ''))); this._introWait = true; }
     else {
       com.say('A', KC.util.pick(this.p1.def.intro));
       com.say('B', KC.util.pick(this.p2.def.intro));
@@ -261,7 +264,7 @@ KC.Fight = class {
         const c = KC.game.commentary;
         const queueBusy = c._queue.length > 0 || c._speaking;
         const skip = input1.punch || input1.kick || input1.grab;
-        done = this.phaseT > 2.5 && (!queueBusy || this.phaseT > 30 || skip);
+        done = this.phaseT > 2.5 && (!queueBusy || this.phaseT > (this._introBoss ? 30 : 20) || skip);
       }
       if (done) {
         this.phase = 'fight'; KC.game.hud.splash('FIGHT!', 800);
