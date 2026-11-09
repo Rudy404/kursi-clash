@@ -275,6 +275,20 @@ window.KC = window.KC || {};
     if (m) game.commentary.stopAll();
     el('mute-btn').textContent = m ? '🔇' : '🔊';
   };
+  // flash-safe mode: kills the fullscreen impact flash and the animated speed lines.
+  // honors the OS reduced-motion setting by default; the FX button overrides either way.
+  {
+    const fxBtn = el('fx-btn');
+    const stored = localStorage.getItem('kc-lowfx');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const applyFx = low => { document.body.classList.toggle('lowfx', low); fxBtn.textContent = low ? '\u26A1\uFE0E' : '\u26A1'; fxBtn.style.opacity = low ? 0.45 : 1; };
+    applyFx(stored === null ? reduced : stored === '1');
+    fxBtn.onclick = () => {
+      const low = !document.body.classList.contains('lowfx');
+      localStorage.setItem('kc-lowfx', low ? '1' : '0');
+      applyFx(low);
+    };
+  }
 
   let paused = false;
   function togglePause() {
@@ -344,9 +358,10 @@ window.KC = window.KC || {};
       game.fight.fx.update(rawDt);
     }
     if (game.fight) {
+      const cine = game.fight.cinematic;
       camera.follow(game.fight.p1.x, game.fight.p2.x, rawDt,
-        game.fight.cinematic.active ? (game.fight.cinematic.attacker.x + game.fight.cinematic.defender.x) / 2 : undefined,
-        game.fight.cinematic.active ? 5.5 : undefined);
+        cine.active ? (cine.attacker.x + cine.defender.x) / 2 : undefined,
+        cine.active ? (cine.camDist || 5.5) : undefined);
     }
     if (stageObj) renderer.render(scene, camera.cam);
   }

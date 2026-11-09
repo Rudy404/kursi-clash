@@ -67,7 +67,8 @@ KC.Cinematic = class {
     this.sfx = document.getElementById('cine-sfx');
   }
 
-  /* kind: 'push' (almighty-push style repel) | 'flurry' (rapid juggle) */
+  /* kind: 'push' | 'flurry' | signature kinds 'rise' (divine charge-blast) |
+     'gatling' (dash-through barrage) | 'zoomblast' (slow dolly-in mystery charge) */
   _impactFlash() {
     const el = document.getElementById('impact-flash');
     if (!el) return;
@@ -79,13 +80,115 @@ KC.Cinematic = class {
     this.attacker = attacker; this.defender = defender;
     this.onDone = onDone;
     this.t = 0; this.beat = 0;
+    this.camDist = 5.5;
     document.body.classList.add('cine');
     const name = attacker.def.name;
     const sup = attacker.pendingSuper;
     KC.game.hud.cineLabel(sup ? sup.name : '');
     KC.game.commentary.local('super', { f: attacker.def, superName: sup ? sup.name : '' });
     KC.game.commentary.aiMoment('super', { f: attacker.def, superName: sup ? sup.name : '', detail: 'anime-style cinematic super just landed' });
-    this.beats = kind === 'push' ? this._pushBeats() : this._flurryBeats();
+    this.beats = kind === 'push' ? this._pushBeats()
+      : kind === 'rise' ? this._riseBeats()
+      : kind === 'gatling' ? this._gatlingBeats()
+      : kind === 'zoomblast' ? this._zoomblastBeats()
+      : this._flurryBeats();
+  }
+
+  /* ALMIGHTY AASHIRWAD signature: three ascending golden ring pulses while charging,
+     then an enormous repel that launches the defender sky-high. */
+  _riseBeats() {
+    const A = this.attacker, D = this.defender;
+    return [
+      { d: 0.55, run: () => { A.f3d.play('supercast', 1.35); this.fight.slowmo(0.25);
+          this.fight.fx.shockwave(A.x, 0); this.fight.fx.burst(A.x, 1.0, 0, 0xffd23f, 10, 2.5); } },
+      { d: 0.45, run: () => { this.fight.fx.shockwave(A.x, 0); this.fight.fx.burst(A.x, 1.8, 0, 0xffe08a, 14, 3);
+          KC.game.camera.addFovKick(3); } },
+      { d: 0.4, run: () => { this.fight.fx.shockwave(A.x, 0); this.fight.fx.burst(A.x, 2.4, 0, 0xfff2b0, 18, 3.5);
+          KC.game.camera.addShake(0.2); } },
+      { d: 0.15, run: () => {
+          this.fight.slowmo(1);
+          this.fight.fx.shockwave(A.x, 0);
+          this.fight.fx.burst(A.x + A.facing * 0.8, 1.6, 0, 0xfff2b0, 34, 7);
+          KC.game.camera.addShake(0.6);
+          KC.game.camera.addFovKick(11);
+          this._impactFlash();
+          this.fight.hitstop(0.14);
+          D.vx = A.facing * 15; D.liftV = 10; D.liftY = 0.2; D.airborne = true;
+          D.f3d.play('launched', 1.1);
+          this.fight.applyDamage(A, D, A.pendingSuper.dmg / 100, true);
+        } },
+      { d: 1.2, run: () => {} },
+      { d: 0.4, run: () => this._end() },
+    ];
+  }
+
+  /* GATLING GALEEBI signature: the attacker dashes THROUGH the defender, swapping sides
+     between hits - a proper anime rush-down. 12 hits, alternating sides, pink mohabbat sparks. */
+  _gatlingBeats() {
+    const beats = [];
+    const A = this.attacker, D = this.defender;
+    beats.push({ d: 0.5, run: () => { A.f3d.play('supercast', 0.5); this.fight.slowmo(0.35); } });
+    const total = 12;
+    let side = 1;
+    for (let i = 0; i < total; i++) {
+      beats.push({ d: 0.12, run: () => {
+        this.fight.slowmo(0.6);
+        side = -side;
+        A.x = KC.util.clamp(D.x + side * 1.1, -7.5, 7.5);
+        A.facing = -side; A.f3d.facing = -side;
+        A.f3d.root.rotation.y = A.facing === 1 ? Math.PI / 2 - 0.55 : -Math.PI / 2 + 0.55;
+        A.f3d.play(i % 2 ? 'punch' : 'kick', 0.12);
+        D.f3d.play('hurt', 0.15);
+        this.fight.fx.impactFlash(D.x, 1.3 + Math.random() * 0.6, 0.2);
+        this.fight.fx.burst(D.x, 1.4, 0.2, i % 2 ? 0xff7eb9 : 0xffd23f, 5, 3);
+        KC.game.camera.addShake(0.14);
+        KC.game.camera.addFovKick(2);
+        this.fight.hitstop(0.04);
+        this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) / total, true);
+      } });
+    }
+    beats.push({ d: 0.2, run: () => {
+      this.fight.slowmo(1);
+      D.vx = -side * 9; D.liftV = 7; D.liftY = 0.2; D.airborne = true;
+      D.f3d.play('launched', 0.8);
+      this.fight.fx.shockwave(D.x, 0);
+      this.fight.fx.burst(D.x, 1.5, 0, 0xff7eb9, 16, 5);
+      KC.game.camera.addShake(0.45);
+      KC.game.camera.addFovKick(7);
+      this._impactFlash();
+    } });
+    beats.push({ d: 0.9, run: () => {} });
+    beats.push({ d: 0.3, run: () => this._end() });
+    return beats;
+  }
+
+  /* COVFEFE CATACLYSM signature: nobody knows what is happening. A long slow dolly-in
+     while golden question marks spiral up around Chacha, then a very tremendous blast. */
+  _zoomblastBeats() {
+    const A = this.attacker, D = this.defender;
+    const qColors = [0xffd23f, 0xff6b6b, 0x7ec8ff];
+    return [
+      { d: 1.2, run: () => { A.f3d.play('supercast', 1.2); this.fight.slowmo(0.3); this.camDist = 7.5; } },
+      { d: 0.4, run: () => { this.camDist = 6.4; this.fight.fx.burst(A.x + (Math.random()-0.5), 1.2, 0, qColors[0], 8, 2); } },
+      { d: 0.4, run: () => { this.camDist = 5.2; this.fight.fx.burst(A.x + (Math.random()-0.5), 1.7, 0, qColors[1], 8, 2); } },
+      { d: 0.4, run: () => { this.camDist = 4.2; this.fight.fx.burst(A.x + (Math.random()-0.5), 2.1, 0, qColors[2], 8, 2);
+          KC.game.camera.addShake(0.15); } },
+      { d: 0.15, run: () => {
+          this.fight.slowmo(1);
+          this.camDist = 6.5;
+          this.fight.fx.shockwave(A.x, 0);
+          for (const c of qColors) this.fight.fx.burst(A.x + A.facing * 0.9, 1.5, 0, c, 12, 6);
+          KC.game.camera.addShake(0.65);
+          KC.game.camera.addFovKick(12);
+          this._impactFlash();
+          this.fight.hitstop(0.15);
+          D.vx = A.facing * 14; D.liftV = 8; D.liftY = 0.2; D.airborne = true;
+          D.f3d.play('launched', 1.0);
+          this.fight.applyDamage(A, D, A.pendingSuper.dmg / 100, true);
+        } },
+      { d: 1.1, run: () => {} },
+      { d: 0.4, run: () => this._end() },
+    ];
   }
 
   _pushBeats() {
@@ -147,6 +250,7 @@ KC.Cinematic = class {
     document.body.classList.remove('cine');
     KC.game.hud.cineLabel(null);
     this.active = false;
+    this.camDist = 5.5;
     this.fight.slowmo(1);
     const cb = this.onDone; this.onDone = null;
     if (cb) cb();

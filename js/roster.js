@@ -10,7 +10,7 @@ KC.ROSTER = [
     supers: [
       { name: 'MITRON CHAKRA', dmg: 30, desc: 'Rises into the sky spinning a glowing chakra of promises, hurls it for 30% damage.' },
       { name: 'SHAKTI PRACHAR', dmg: 22, desc: 'A roaring speech shockwave. Opponent is stunned by sheer volume.' },
-      { name: 'ALMIGHTY AASHIRWAD', dmg: 38, cine: 'push', desc: 'Charges a divine blessing, then blasts the opponent across the stage with a spherical wave.' },
+      { name: 'ALMIGHTY AASHIRWAD', dmg: 38, cine: 'rise', desc: 'Charges a divine blessing, then blasts the opponent across the stage with a spherical wave.' },
       { name: 'CUTTING CHAI CANNON', dmg: 24, desc: 'A piping hot cutting-chai splash. Served in a glass, returned at velocity. 24%.' }
     ],
     intro: ['Mitron... taiyaar ho jao.', 'Chai thandi ho rahi hai, jaldi khatam karte hain.', 'Ek cutting ki keemat samajhte ho? Yeh fight bhi cutting mein khatam.', 'Stall toh maine har chowk pe lagaya hai. Yeh ring bhi mera chowk hai.'],
@@ -24,7 +24,7 @@ KC.ROSTER = [
     supers: [
       { name: 'ALOO-MAKER 3000', dmg: 30, desc: 'Zaps the opponent into an aloo, feeds it to his machine - out comes pure sona. 30% damage.' },
       { name: 'MOHABBAT WAVE', dmg: 22, desc: 'Opens a mohabbat ki dukaan mid-fight. Love hits harder than expected.' },
-      { name: 'GATLING GALEEBI', dmg: 36, cine: 'flurry', desc: 'A stretchy-armed barrage of sixty-six slaps of affection.' },
+      { name: 'GATLING GALEEBI', dmg: 36, cine: 'gatling', desc: 'A stretchy-armed barrage of sixty-six slaps of affection.' },
       { name: 'PADYATRA PILEDRIVER', dmg: 26, desc: 'Ten thousand steps of momentum in one piledriver. Cardio is a weapon. 26%.' }
     ],
     intro: ['Main yahan mohabbat ki dukaan kholne aaya hoon.', 'Nafrat ke bazaar mein... ek thappad ki dukaan.', 'Padyatra se itna stamina hai, tumhari stamina bar chhoti lagegi.', 'Daro mat. Sirf haarne ki taiyari karo.'],
@@ -52,7 +52,7 @@ KC.ROSTER = [
     supers: [
       { name: 'TARIFF TORNADO', dmg: 30, desc: 'Spins a golden tornado of import duties. 30% damage plus emotional tax.' },
       { name: 'WALL SLAM', dmg: 24, desc: 'Builds a small beautiful wall. Opponent walks into it. Everyone saw it.' },
-      { name: 'COVFEFE CATACLYSM', dmg: 36, cine: 'push', desc: 'Nobody knows what it is. It knows what it is. The best blast. 36%.' },
+      { name: 'COVFEFE CATACLYSM', dmg: 36, cine: 'zoomblast', desc: 'Nobody knows what it is. It knows what it is. The best blast. 36%.' },
       { name: 'STAKEHOLDER STOMP', dmg: 24, desc: 'A very firm negotiation, conducted entirely with one boot. 24%.' }
     ],
     intro: ['This will be the greatest fight. Everybody says so.', 'I know fights. I have the best fights.', 'No deal is better than a bad deal. Tumhari health bar? Very bad deal.', 'Tariff laga diya hai tumhare confidence pe. Hundred percent.'],
