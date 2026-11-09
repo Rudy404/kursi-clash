@@ -188,7 +188,7 @@ KC.FighterAssets = {
 const KC_BODY_MAP = {
   yatrayodha: 'business', dididhamaka: 'womandress',
   bulldozerbaba: 'farmer', highwayman: 'worker', starneta: 'business', railrustom: 'worker',
-  chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'business',
+  chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'king',
   chaiboss: 'worker', tariffchacha: 'business'
 };
 

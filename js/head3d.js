@@ -98,11 +98,14 @@ KC.Head3D = {
     }
 
     // signature extras
-    if (f.id === 'mufflerman') {
-      const mm = M(0xd8d2c4, 0.9);
-      const wrap = add(new THREE.TorusGeometry(0.24, 0.06, 10, 20), mm, 0, -0.10, 0.02);
+    if (f.id === 'mufflerman') { // THE muffler: deep maroon, wrapped proud over the collar
+      const mm = M(0x7a1f1f, 0.88);
+      const wrap = add(new THREE.TorusGeometry(0.27, 0.085, 10, 20), mm, 0, -0.13, 0.03);
       wrap.rotation.x = Math.PI / 2;
-      add(new THREE.BoxGeometry(0.12, 0.3, 0.05), mm, 0.10, -0.28, 0.18);
+      const wrap2 = add(new THREE.TorusGeometry(0.25, 0.07, 10, 20), mm, 0, -0.03, 0.02);
+      wrap2.rotation.x = Math.PI / 2;
+      add(new THREE.BoxGeometry(0.14, 0.4, 0.06), mm, 0.13, -0.36, 0.20); // hanging tail
+      add(new THREE.BoxGeometry(0.14, 0.05, 0.062), M(0xd8d2c4, 0.9), 0.13, -0.55, 0.20); // tail fringe
     }
     if (f.id === 'chaiboss') { // chai-stain kurta legend: small chai glass in ear? no - tilak
       add(new THREE.BoxGeometry(0.03, 0.09, 0.015), M(0xd43a2a, 0.6), 0, 0.47, 0.315);
