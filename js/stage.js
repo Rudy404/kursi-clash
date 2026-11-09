@@ -158,6 +158,12 @@ KC.Camera = class {
     const wantDist = distOverride !== undefined ? Math.max(distOverride, fitDist) : fitDist;
     this.dist = KC.util.lerp(this.dist, wantDist, 1 - Math.pow(0.001, dt));
     this.focusX = KC.util.lerp(this.focusX, mid, 1 - Math.pow(0.0005, dt));
+    // hard fit floor: never let the lerp lag crop a fighter mid-frame (e.g. cine blast-back
+    // grows sep faster than the dist lerp can chase). Computed from current focusX so it
+    // holds throughout the interpolation, not just at settled distance.
+    const halfMax = Math.max(Math.abs(ax - this.focusX), Math.abs(bx - this.focusX));
+    const hardFit = (halfMax + (this.portrait ? 0.65 : 1.2)) / Math.max(tanH, 0.05);
+    this.dist = Math.max(this.dist, this.portrait ? KC.util.clamp(hardFit, 4.6, 34) : KC.util.clamp(hardFit, 5.8, 18));
     this.shake = Math.max(0, this.shake - dt * 1.4);
     const sx = (Math.random() - 0.5) * this.shake, sy = (Math.random() - 0.5) * this.shake;
     const baseY = this.portrait ? 2.1 : this.baseY;
