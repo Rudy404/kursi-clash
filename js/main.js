@@ -213,27 +213,33 @@ window.KC = window.KC || {};
     });
   };
   KC.NetRouter.onOpen(() => {
-    if (online.role === 'host') onlineStatus('Friend connected! Pick your neta and hit FIGHT when they have picked theirs.');
+    // fires when OUR socket opens: meaningful for the guest (join succeeded);
+    // the host learns about the friend via the peer-joined notice instead
     if (online.role === 'guest') onlineStatus('Connected! Pick your neta and hit FIGHT.');
   });
   KC.NetRouter.onClose(() => {
     // mid-match drop on the relay: try to rejoin with stored credentials before
-    // tearing down - the snap stream converges the match within one tick of rejoin
+    // tearing down - the snap stream converges the match after rejoin
     if (online.active && KC.NetRouter.getMode() === 'relay') {
+      if (online.rejoining) return; // closes from superseded attempt transports
+      online.rejoining = true;
       let tries = 0;
       onlineStatus('Connection dropped - rejoining...');
       const attempt = () => {
         tries++;
         KC.NetRouter.rejoin(res => {
           if (res.ok) {
+            online.rejoining = false;
             onlineStatus('Reconnected!');
-            // tell the host whether our local match object survived the drop:
+            // a rejoined GUEST tells the host whether its match object survived:
             // started=false makes the host resend 'start' (we never got it or the
-            // fight is gone); started=true means the snap stream re-converges us
-            KC.NetRouter.send({ t: 'ready', started: !!(online.matchStarted && game.fight) });
+            // fight is gone); started=true means the snap stream re-converges us.
+            // the host never sends ready (authoritative; schema is guest-only)
+            if (online.role === 'guest') KC.NetRouter.send({ t: 'ready', started: !!(online.matchStarted && game.fight) });
             return;
           }
           if (tries < 5) { onlineStatus('Connection dropped - retry ' + tries + '/5...'); setTimeout(attempt, 3000); return; }
+          online.rejoining = false;
           onlineStatus('Connection closed.');
           online.active = false;
           if (game.fight) { game.fight = null; game.hud.hide(); game.commentary.stopAll(); only('select'); }
@@ -248,6 +254,9 @@ window.KC = window.KC || {};
   KC.NetRouter.onMessage(d => {
     if (!d || !d.t) return;
     if (d.t === 'pick') { online.guestPick = d.name; onlineStatus('Friend picked ' + d.name + '. Your turn - pick and FIGHT!'); }
+    if (d.t === 'peer' && d.state === 'joined' && online.role === 'host' && !online.matchStarted) {
+      onlineStatus('Friend connected! Pick your neta and hit FIGHT when they have picked theirs.');
+    }
     if (d.t === 'ready' && online.role === 'host') {
       // rejoined guest declares its state: if it never started (or lost the fight
       // object) while our match is running, resend the start one-shot so it can
@@ -302,7 +311,22 @@ window.KC = window.KC || {};
     }
     startFight();
   };
-  el('rematch-btn').onclick = () => startFight();
+  el('rematch-btn').onclick = () => {
+    // online rematch: the host restarts over the wire (mode 'friend'), the guest
+    // waits for the host's start one-shot - never fall back to a local CPU fight
+    // while connected, or the friend's inputs silently stop mattering
+    if (online.active && online.role === 'host' && KC.NetRouter.connected()) {
+      KC.NetRouter.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+      online.matchStarted = true;
+      startFightOnline('host');
+      return;
+    }
+    if (online.active && online.role === 'guest') {
+      onlineStatus('Waiting for host to start the rematch...');
+      return;
+    }
+    startFight();
+  };
   el('change-btn').onclick = () => { only('select'); game.hud.hide(); el('touch-ui').classList.remove('ingame'); if (game.fight) { game.fight.dispose(); game.fight = null; } };
   el('pause-btn').onclick = () => togglePause();
   el('resume-btn').onclick = () => togglePause();

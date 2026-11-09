@@ -17,6 +17,7 @@
   let relay = null;          // KC.NetRelay transport instance
   let relayCreds = null;     // {roomId, key} for reconnect
   let onMessageCb = null, onOpenCb = null, onCloseCb = null;
+  let gen = 0; // connection generation: transports from superseded attempts go silent
 
   // URL/config: ?relay=https://host.workers.dev enables relay mode with that base
   try {
@@ -25,19 +26,21 @@
     if (rb) { mode = 'relay'; relayBase = rb; }
   } catch (e) {}
 
-  function wireRelayCbs() {
-    relay.onMessage(d => { if (onMessageCb) onMessageCb(d); });
-    relay.onOpen(() => { if (onOpenCb) onOpenCb(); });
-    relay.onClose(() => { if (onCloseCb) onCloseCb(); });
+  function wireRelayCbs(myGen) {
+    // every callback is generation-guarded: a failed rejoin attempt's transport
+    // must never surface close/open/message events once a newer attempt exists
+    relay.onMessage(d => { if (myGen === gen && onMessageCb) onMessageCb(d); });
+    relay.onOpen(() => { if (myGen === gen && onOpenCb) onOpenCb(); });
+    relay.onClose(() => { if (myGen === gen && onCloseCb) onCloseCb(); });
     // a reliable one-shot exhausted its retries: the match state is no longer
     // trustworthy, so surface it as a connection loss (triggers rejoin/teardown)
-    relay.onDrop(() => { if (onCloseCb) onCloseCb(); });
+    relay.onDrop(() => { if (myGen === gen && onCloseCb) onCloseCb(); });
   }
 
   function host(cb) {
     if (mode !== 'relay') return KC.Online.host(cb);
     relay = KC.NetRelay.make();
-    wireRelayCbs();
+    wireRelayCbs(++gen);
     relay.host(relayBase, res => {
       if (res.ok) {
         relayCreds = { roomId: relay.getRoomId(), key: relay.getHostKey(), role: 'host' };
@@ -54,7 +57,7 @@
     const m = /^([0-9a-f]{32}):([0-9a-f]{32})$/.exec(String(code).trim());
     if (!m) { cb({ ok: false, error: 'bad-code' }); return; }
     relay = KC.NetRelay.make();
-    wireRelayCbs();
+    wireRelayCbs(++gen);
     relay.join(relayBase, m[1], m[2], res => {
       if (res.ok) relayCreds = { roomId: m[1], key: m[2], role: 'guest' };
       cb(res);
@@ -66,7 +69,7 @@
   function rejoin(cb) {
     if (mode !== 'relay' || !relayCreds) { cb({ ok: false, error: 'no-creds' }); return; }
     relay = KC.NetRelay.make();
-    wireRelayCbs();
+    wireRelayCbs(++gen);
     relay.join(relayBase, relayCreds.roomId, relayCreds.key, cb, relayCreds.role);
   }
 
