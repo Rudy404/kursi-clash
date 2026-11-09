@@ -174,7 +174,7 @@ body.lowfx #speedlines { animation:none; opacity:.3; }
 .online-row { display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
 .online-row.hidden { display:none; }
 .online-or { color:#c9a227; font-weight:700; }
-.join-input { width:110px; padding:10px; font-size:18px; letter-spacing:3px; text-align:center; text-transform:uppercase;
+.join-input { width:110px; padding:10px; font-size:18px; letter-spacing:3px; text-align:center; text-transform:uppercase; }
 .online-status { margin-top:10px; color:#ffe9b0; font-size:14px; min-height:18px; }
 
 /* desktop select: use the screen, bigger tiles on wide viewports */
@@ -199,3 +199,13 @@ body.lowfx #speedlines { animation:none; opacity:.3; }
   #news-ticker, .ticker-text { font-size:13px !important; }
   .shakti-label { font-size:11px !important; }
 }
+
+/* super picker: hold SUPER to open, tap a name to fire that super */
+#super-picker { position:fixed; right:14px; bottom:calc(120px + env(safe-area-inset-bottom)); z-index:30;
+  display:grid; grid-template-columns:1fr 1fr; gap:6px; background:rgba(12,10,18,.92);
+  border:3px solid var(--ink); border-radius:14px; padding:8px; max-width:290px; }
+#super-picker.hidden { display:none; }
+#super-picker .sp-title { grid-column:1/-1; font-size:10px; color:#ffd23f; text-align:center; letter-spacing:.06em; }
+#super-picker button { font-family:inherit; font-size:10px; padding:10px 8px; border-radius:10px;
+  border:2px solid var(--ink); background:rgba(55,200,245,.85); color:#0b0b12; font-weight:700; }
+#super-picker button.sig { background:rgba(255,210,63,.9); }

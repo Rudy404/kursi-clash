@@ -94,7 +94,7 @@ KC.Fight = class {
     if (KC.Audio) KC.Audio.play('swing');
   }
 
-  /* SUPER button cycles supers[2..5] (first press = signature cine).
+  /* SUPER: quick tap = signature cine (2); hold opens a picker listing all 6 by name.
      Desktop: u/i/o = supers[0..2], p = 3, h = 4, n = 5. Non-cine supers = heavy strike + FX. */
   trySuper(p, idx) {
     if (p.busy() || !p.grounded() || this.cinematic.active) return;

@@ -117,23 +117,53 @@ window.KC = window.KC || {};
   stickZone.addEventListener('touchcancel', stickEnd);
 
   // action buttons
-  // SUPER button cycles through the fighter's supers: first press = signature cine (2),
-  // then 3, 4, 5... and wraps back to 2. All supers stay reachable on touch.
-  let supCycle = -1;
+  // SUPER: quick tap = signature cine (index 2). Hold ~450ms = super picker with all
+  // six moves listed by name; tapping a name fires exactly that super. Discoverable and
+  // intentional on touch; desktop keys u/i/o/p/h/n hit 0-5 directly.
+  const picker = el('super-picker');
+  let pickerOpenFor = null;
+  const closePicker = () => { picker.classList.add('hidden'); pickerOpenFor = null; };
+  const openPicker = () => {
+    // the LOCAL player's fighter: host/CPU = p1, online guest = p2
+    const def = game.fight ? (online.active && online.role === 'guest' ? game.fight.p2.def : game.fight.p1.def) : state.p1;
+    if (!def || !def.supers) return false;
+    picker.innerHTML = '<div class="sp-title">CHOOSE SUPER</div>' + def.supers.map((s, i) =>
+      `<button data-si="${i}" class="${i === 2 ? 'sig' : ''}">${s.name}</button>`).join('');
+    picker.querySelectorAll('button').forEach(b => {
+      b.addEventListener('touchstart', ev => { ev.preventDefault(); ev.stopPropagation(); input1.super = +b.dataset.si; closePicker(); }, { passive: false });
+      b.addEventListener('mousedown', ev => { ev.preventDefault(); ev.stopPropagation(); input1.super = +b.dataset.si; closePicker(); });
+    });
+    picker.classList.remove('hidden');
+    pickerOpenFor = def.id;
+    return true;
+  };
   document.querySelectorAll('#touch-buttons .tbtn').forEach(btn => {
     const b = btn.dataset.btn;
+    let holdT = null, held = false;
     const press = e => {
       e.preventDefault();
       if (b === 'super') {
-        const arr = (game.fight ? game.fight.p1.def : state.p1).supers;
-        supCycle = (supCycle + 1) % Math.max(1, arr.length - 2);
-        input1.super = 2 + supCycle;
+        held = false;
+        holdT = setTimeout(() => { held = openPicker(); }, 450);
       }
       else input1[b] = 1;
     };
+    const release = e => {
+      if (b !== 'super') return;
+      clearTimeout(holdT);
+      if (!held) { input1.super = 2; closePicker(); }
+      held = false;
+    };
     btn.addEventListener('touchstart', press, { passive: false });
+    btn.addEventListener('touchend', release);
+    btn.addEventListener('touchcancel', () => clearTimeout(holdT));
     btn.addEventListener('mousedown', press);
+    btn.addEventListener('mouseup', release);
   });
+  // tapping anywhere outside the picker closes it without firing
+  document.addEventListener('touchstart', e => {
+    if (pickerOpenFor && !picker.contains(e.target)) closePicker();
+  }, { passive: true });
 
   // ---------- select screen ----------
   const grid = el('roster-grid');
