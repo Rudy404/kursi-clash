@@ -84,6 +84,48 @@ KC.rivalBanter = {
   "Highway Man: March? On my highway, even bullock carts take the service lane!",
   "Mahabapu: Then I will walk on your ego. It is clearly the widest road here!",
   "Highway Man: Green corridor for you, old man: straight to the hospital!"
+ ],
+ "CHAIBOSS|MUFFLER MAN": [
+  "Chaiboss: Mitron, aam aadmi ko cutting chai se hi samajh aata hai!",
+  "Muffler Man: Mujhe VIP chai nahi chahiye, boss. Sirf tumhari seat chahiye!",
+  "Chaiboss: Seat? Beta, tumhare paas toh muffler ke alawa kuch nahi!",
+  "Muffler Man: Muffler kaafi hai. Thand mein bhi, aur tumhari garmi utarne mein bhi!",
+  "Chaiboss: Arre wah! Toh le, ek kadak mukka, bilkul muft!"
+ ],
+ "CHAIBOSS|CHANAKYA BOSS": [
+  "Chaiboss: Mitron, yeh Chanakya mujhe seekha raha hai!",
+  "Chanakya Boss: Seekhne ki baat nahi, boss. Yeh pehle se likha gaya masterstroke hai!",
+  "Chaiboss: Masterstroke? Meri chai ki steam se tumhari strategy bhaap!",
+  "Chanakya Boss: Steam se fog hota hai, boss. Aur fog mein main hi raasta jaanta hoon!",
+  "Chaiboss: Raasta ring se bahar jaata hai, guru ji. Ab nikal lo!"
+ ],
+ "BULLDOZER BABA|MUFFLER MAN": [
+  "Bulldozer Baba: Encroachment alert! Ek muffler sadak pe khada hai!",
+  "Muffler Man: Bulldozer se aam aadmi nahi darta, Baba. Aam aadmi vote se girata hai!",
+  "Bulldozer Baba: Vote ki filing yahan nahi chalti. Yeh demolition zone hai!",
+  "Muffler Man: Demolish karo, par pehle permission dikhao. Nahi toh PIL!",
+  "Bulldozer Baba: PIL? Baba ke paas sirf PILOT kaam karta hai. Bulldozer ka pilot!"
+ ],
+ "DIDI DHAMAKA|STAR NETA": [
+  "Didi Dhamaka: Eto makeup! Ei ring e lighting chair nei, chhelebela gelo!",
+  "Star Neta: Camera tumpe hoga hi nahi, Didi. Main hero hoon is picture ka!",
+  "Didi Dhamaka: Hero? Ami tomar interval banabo, ek chappal e!",
+  "Star Neta: Interval? Meri picture mein interval nahi hota, Didi. Sirf climax!",
+  "Didi Dhamaka: Climax ekhon para r meye dikhiye debe. Khela hobe!"
+ ],
+ "FACT BHAI|TARIFF CHACHA": [
+  "Fact Bhai: Breaking: har claim tumhara debunk ho chuka hai, Chacha!",
+  "Tariff Chacha: Fake fact! I have the best facts. Everybody says so!",
+  "Fact Bhai: Community notes ne tumhe itni baar tag kiya, tum trending ho!",
+  "Tariff Chacha: Trending? That means I am winning! Very popular, very true!",
+  "Fact Bhai: Final fact check: tumhare jaw mein mera mukka. Verified!"
+ ],
+ "RAIL RUSTOM|STAR NETA": [
+  "Rail Rustom: Picture chhoro, Neta ji. Platform pe hero sirf engine hota hai!",
+  "Star Neta: Engine? Mere action sequence mein train bhi side heroine lagti hai!",
+  "Rail Rustom: Side heroine? Tumhe toh general dabbe mein bhi jagah nahi milegi!",
+  "Star Neta: Jagah nahi milegi? Meri entry pe poora station nach uthta hai!",
+  "Rail Rustom: Nach le. Last local ka time ho gaya. Shunting shuru!"
  ]
 };
 KC.extraCommentary = {
