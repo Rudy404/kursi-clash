@@ -248,9 +248,14 @@ window.KC = window.KC || {};
     });
   };
   KC.NetRouter.onOpen(() => {
-    // fires when OUR socket opens: meaningful for the guest (join succeeded);
-    // the host learns about the friend via the peer-joined notice instead
+    // fires when OUR socket opens: meaningful for the guest (join succeeded).
+    // On the PeerJS transport the host's datachannel 'open' IS the friend's
+    // arrival - relay hosts get that from the server peer-joined notice instead,
+    // and their socket opens at room creation, so gate this to peerjs.
     if (online.role === 'guest') onlineStatus('Connected! Pick your neta and hit FIGHT.');
+    else if (online.role === 'host' && !online.matchStarted && KC.NetRouter.getMode() === 'peerjs') {
+      onlineStatus('Friend connected! Pick your neta and hit FIGHT when they have picked theirs.');
+    }
   });
   KC.NetRouter.onClose(() => {
     // mid-match drop on the relay: try to rejoin with stored credentials before
