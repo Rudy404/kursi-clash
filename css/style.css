@@ -172,6 +172,10 @@ body.lowfx #speedlines { animation:none; opacity:.3; }
 .online-panel { max-width:560px; margin:10px auto 0; background:rgba(20,12,4,.85); border:2px solid #6b5320; border-radius:12px; padding:12px; text-align:center; }
 .online-panel.hidden { display:none; }
 .online-row { display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
+.online-row.hidden { display:none; }
+.relay-switch { margin-top:8px; }
+.relay-label { display:inline-flex; align-items:center; gap:6px; font-family:'Rajdhani',sans-serif; font-size:14px; letter-spacing:1px; color:#d8c68a; cursor:pointer; }
+.relay-base-input { width:min(420px, 90%); text-transform:none; letter-spacing:0; }
 .online-or { color:#c9a227; font-weight:700; }
 .join-input { width:110px; padding:10px; font-size:18px; letter-spacing:3px; text-align:center; text-transform:uppercase;
   background:#1a1206; color:#ffe9b0; border:2px solid #6b5320; border-radius:8px; font-family:inherit; font-weight:800; }
