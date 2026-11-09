@@ -56,6 +56,7 @@ window.KC = window.KC || {};
         el('end-title').textContent = winner.name + ' WINS!';
         el('end-quote').textContent = '"' + KC.util.pick(winner.win) + '"';
         game.commentary.say('A', winner.name + ' wins the kursi! ' + wins[0] + '-' + wins[1] + '!');
+        online.matchStarted = false; // a new match needs a fresh FIGHT press (and fresh start one-shot)
       }, 2400);
     }
   };
@@ -311,7 +312,7 @@ window.KC = window.KC || {};
   el('quit-btn').onclick = () => {
     paused = false; hide('pause-menu');
     el('touch-ui').classList.remove('ingame');
-    if (online.active) { online.active = false; KC.NetRouter.close(); online.role = null; onlineStatus(''); }
+    if (online.active) { online.active = false; online.matchStarted = false; KC.NetRouter.close(); online.role = null; onlineStatus(''); }
     if (game.fight) game.fight.dispose();
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
