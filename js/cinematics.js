@@ -28,7 +28,8 @@ KC.FX = class {
   impactFlash(x, y, z) {
     this.flash.position.set(x, y, z); this.flash.visible = true; this._flashT = 0;
   }
-  shockwave(x, z) {
+  shockwave(x, z, color) {
+    if (color) this.ringMat.color.set(color);
     this._ringPos.set(x, 0.1, z); this.ring.visible = true; this._ringT = 0;
   }
   update(dt) {
@@ -55,6 +56,18 @@ KC.FX = class {
       if (this._ringT >= 1) this.ring.visible = false;
     }
   }
+};
+
+/* Per-super themes for the shared push/flurry kinds: colors, rings and mid-cine
+   callouts give each neta's super its own identity. Visuals only - damage math
+   (dmg/100 push, dmg/total flurry) is identical to the generic beats. */
+KC.CINE_THEMES = {
+  'BHADROK BLAST':            { ring: 0x3f8cff, burst1: 0x9fc4ff, burst2: 0xffffff, mid: 'PARA ENERGY!', doubleRing: true },
+  'ARAKSHIT AAG':             { ring: 0xff5722, burst1: 0xff9800, burst2: 0xffd23f, mid: 'MASTERSTROKE!', embers: true },
+  'ODD-EVEN OVERDRIVE':       { ring: 0x90caf9, burst1: 0xffffff, burst2: 0x90caf9, mid: 'ODD + EVEN, DONO!', dualSide: true },
+  'GREENFIELD GRAND SLAM':    { b1: 0x2e7d32, b2: 0xffffff, mid: 'NO SPEED LIMIT!', rumble: true },
+  'LALU... WAIT, RUSTOM ROCKET': { b1: 0xd32f2f, b2: 0xfff3e0, mid: 'PLATFORM SE RAVANA!', bigLaunch: true },
+  'VIRAL VERIFICATION':       { b1: 0x25d366, b2: 0x34b7f1, mid: 'FORWARDED 47x!', tripleTap: true },
 };
 
 /* Cinematic director: pauses normal fight, runs scripted beats, returns control. */
@@ -302,12 +315,22 @@ KC.Cinematic = class {
 
   _pushBeats() {
     // charge -> repel shockwave -> defender blasted back, tumble, crater dust -> resume
-    return [
+    const TH = (this.attacker.pendingSuper && KC.CINE_THEMES[this.attacker.pendingSuper.name]) || {};
+    const beats = [
       { d: 0.9, run: () => { this.attacker.f3d.play('supercast', 0.9); this.fight.slowmo(0.25); } },
       { d: 0.15, run: () => {
           this.fight.slowmo(1);
-          this.fight.fx.shockwave(this.attacker.x, 0);
-          this.fight.fx.burst(this.attacker.x + this.attacker.facing * 0.8, 1.4, 0, 0xfff2b0, 26, 6);
+          const ax = this.attacker.x;
+          if (TH.dualSide) { // odd day left, even day right - today both
+            this.fight.fx.shockwave(ax - 1.0, 0, TH.ring);
+            this.fight.fx.burst(ax - 0.8, 1.2, 0, TH.burst1, 16, 5);
+            this.fight.fx.burst(ax + 0.8, 1.2, 0, TH.burst2, 16, 5);
+          } else {
+            this.fight.fx.shockwave(ax, 0, TH.ring);
+          }
+          this.fight.fx.burst(ax + this.attacker.facing * 0.8, 1.4, 0, TH.burst1 || 0xfff2b0, 26, 6);
+          if (TH.embers) this.fight.fx.burst(ax + this.attacker.facing * 0.5, 0.6, 0, TH.burst2, 18, 4); // rising fire embers
+          if (TH.mid) KC.game.hud.cineLabel(TH.mid);
           KC.game.camera.addShake(0.5);
           KC.game.camera.addFovKick(9);
           this._impactFlash();
@@ -320,9 +343,17 @@ KC.Cinematic = class {
       { d: 1.0, run: () => {} },
       { d: 0.4, run: () => this._end() },
     ];
+    if (TH.doubleRing) { // circular wave of para energy: a second ring chases the first
+      beats.splice(2, 0, { d: 0.18, run: () => {
+        this.fight.fx.shockwave(this.attacker.x, 0, TH.burst2);
+        KC.game.camera.addShake(0.25);
+      } });
+    }
+    return beats;
   }
 
   _flurryBeats() {
+    const TH = (this.attacker.pendingSuper && KC.CINE_THEMES[this.attacker.pendingSuper.name]) || {};
     const beats = [];
     const A = this.attacker, D = this.defender;
     beats.push({ d: 0.6, run: () => { A.f3d.play('supercast', 0.6); this.fight.slowmo(0.3); } });
@@ -334,20 +365,26 @@ KC.Cinematic = class {
         A.f3d.play(i % 2 ? 'punch' : 'kick', 0.16);
         D.f3d.play('hurt', 0.2);
         this.fight.fx.impactFlash(D.x, 1.4 + Math.random() * 0.5, 0.2);
-        this.fight.fx.burst(D.x, 1.4, 0.2, i % 2 ? 0xffd23f : 0xff6b6b, 6, 3);
-        KC.game.camera.addShake(0.18);
-        KC.game.camera.addFovKick(2.5);
+        this.fight.fx.burst(D.x, 1.4, 0.2, i % 2 ? (TH.b1 || 0xffd23f) : (TH.b2 || 0xff6b6b), 6, 3);
+        if (TH.tripleTap) { // forwarded everywhere: each hit pops a triple burst
+          this.fight.fx.burst(D.x + 0.25, 1.7, 0.2, TH.b2, 4, 2.5);
+          this.fight.fx.burst(D.x - 0.25, 1.1, 0.2, TH.b2, 4, 2.5);
+        }
+        KC.game.camera.addShake(TH.rumble ? 0.3 : 0.18); // highway rumble
+        KC.game.camera.addFovKick(TH.rumble ? 3.5 : 2.5);
         this.fight.hitstop(0.05);
+        if (TH.mid && i === total - 1) KC.game.hud.cineLabel(TH.mid);
         this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) / total, true);
       } });
     }
     beats.push({ d: 0.2, run: () => {
       this.fight.slowmo(1);
-      D.vx = A.facing * 9; D.liftV = 6; D.liftY = 0.2; D.airborne = true;
+      const boost = TH.bigLaunch ? 1.4 : 1; // rocket launch
+      D.vx = A.facing * 9 * boost; D.liftV = 6 * boost; D.liftY = 0.2; D.airborne = true;
       D.f3d.play('launched', 0.8);
-      this.fight.fx.shockwave(D.x, 0);
-      KC.game.camera.addShake(0.4);
-      KC.game.camera.addFovKick(7);
+      this.fight.fx.shockwave(D.x, 0, TH.b1);
+      KC.game.camera.addShake(TH.bigLaunch ? 0.55 : 0.4);
+      KC.game.camera.addFovKick(TH.bigLaunch ? 9 : 7);
       this._impactFlash();
     } });
     beats.push({ d: 0.9, run: () => {} });
