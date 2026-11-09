@@ -11,7 +11,9 @@ KC.ROSTER = [
       { name: 'MITRON CHAKRA', dmg: 30, desc: 'Rises into the sky spinning a glowing chakra of promises, hurls it for 30% damage.' },
       { name: 'SHAKTI PRACHAR', dmg: 22, desc: 'A roaring speech shockwave. Opponent is stunned by sheer volume.' },
       { name: 'ALMIGHTY AASHIRWAD', dmg: 38, cine: 'rise', desc: 'Charges a divine blessing, then blasts the opponent across the stage with a spherical wave.' },
-      { name: 'CUTTING CHAI CANNON', dmg: 24, desc: 'A piping hot cutting-chai splash. Served in a glass, returned at velocity. 24%.' }
+      { name: 'CUTTING CHAI CANNON', dmg: 24, desc: 'A piping hot cutting-chai splash. Served in a glass, returned at velocity. 24%.' },
+      { name: 'BHAP BAZOOKA', dmg: 26, desc: 'Weaponized kettle steam. Pressure cooker diplomacy, 26%.' },
+      { name: 'MAHAKADAK METEOR', dmg: 36, cine: 'zoomblast', desc: 'The strongest brew in the galaxy falls from the sky. Extra kadak, 36%.' }
     ],
     intro: ['Mitron... taiyaar ho jao.', 'Chai thandi ho rahi hai, jaldi khatam karte hain.', 'Ek cutting ki keemat samajhte ho? Yeh fight bhi cutting mein khatam.', 'Stall toh maine har chowk pe lagaya hai. Yeh ring bhi mera chowk hai.'],
     win: ['Hard work beats everything. Aur mitron, chai peete raho.', 'Yeh jeet 140 crore mitron ko samarpit hai.']
@@ -25,7 +27,9 @@ KC.ROSTER = [
       { name: 'ALOO-MAKER 3000', dmg: 30, desc: 'Zaps the opponent into an aloo, feeds it to his machine - out comes pure sona. 30% damage.' },
       { name: 'MOHABBAT WAVE', dmg: 22, desc: 'Opens a mohabbat ki dukaan mid-fight. Love hits harder than expected.' },
       { name: 'GATLING GALEEBI', dmg: 36, cine: 'gatling', desc: 'A stretchy-armed barrage of sixty-six slaps of affection.' },
-      { name: 'PADYATRA PILEDRIVER', dmg: 26, desc: 'Ten thousand steps of momentum in one piledriver. Cardio is a weapon. 26%.' }
+      { name: 'PADYATRA PILEDRIVER', dmg: 26, desc: 'Ten thousand steps of momentum in one piledriver. Cardio is a weapon. 26%.' },
+      { name: 'BHARAT TODO BARRAGE', dmg: 26, desc: 'Divide and conquer? No. Punch and repeat, 26%.' },
+      { name: '4000KM FINAL SPRINT', dmg: 36, cine: 'rise', desc: 'The last stretch of the longest walk ends in orbit. 36%.' }
     ],
     intro: ['Main yahan mohabbat ki dukaan kholne aaya hoon.', 'Nafrat ke bazaar mein... ek thappad ki dukaan.', 'Padyatra se itna stamina hai, tumhari stamina bar chhoti lagegi.', 'Daro mat. Sirf haarne ki taiyari karo.'],
     win: ['Daro mat, daro mat, daro mat.', 'Yeh mohabbat ki jeet hai. Aur meri. Mainly meri.']
@@ -39,7 +43,9 @@ KC.ROSTER = [
       { name: 'CHAPPAL CHAMATKAR', dmg: 30, desc: 'One hawai chappal, thrown with parliamentary precision. 30% damage.' },
       { name: 'DHARNA DRIVE', dmg: 22, desc: 'Sits in instant dharna. Opponent trips over democracy.' },
       { name: 'BHADROK BLAST', dmg: 34, cine: 'push', desc: 'A circular wave of pure para energy launches the opponent into next week.' },
-      { name: 'JORA JHATKA', dmg: 24, desc: 'Twin flowers, twin slaps, one dhamaka. The para approves. 24%.' }
+      { name: 'JORA JHATKA', dmg: 24, desc: 'Twin flowers, twin slaps, one dhamaka. The para approves. 24%.' },
+      { name: 'SHONAR SLAPSTICK SLAP', dmg: 26, desc: 'One golden slap. Bengal has seen theater, never this, 26%.' },
+      { name: 'KHELA QUAKE', dmg: 36, cine: 'quake', desc: 'The ground itself joins the khela. Khela hobe, 36%.' }
     ],
     intro: ['Ami tomay khub bhalobashi... but first, fight.', 'Ei para-r rani ke challenge? Bhalo thakben.', 'Khela hobe. Aur khela amar rules e hobe.', 'Dharna se leke dhamaka tak - ami shob jani.'],
     win: ['Maa, mati, manush. Aur ekta chhoto jay.', 'Cholun, bhaat khai.']
@@ -53,7 +59,9 @@ KC.ROSTER = [
       { name: 'TARIFF TORNADO', dmg: 30, desc: 'Spins a golden tornado of import duties. 30% damage plus emotional tax.' },
       { name: 'WALL SLAM', dmg: 24, desc: 'Builds a small beautiful wall. Opponent walks into it. Everyone saw it.' },
       { name: 'COVFEFE CATACLYSM', dmg: 36, cine: 'zoomblast', desc: 'Nobody knows what it is. It knows what it is. The best blast. 36%.' },
-      { name: 'STAKEHOLDER STOMP', dmg: 24, desc: 'A very firm negotiation, conducted entirely with one boot. 24%.' }
+      { name: 'STAKEHOLDER STOMP', dmg: 24, desc: 'A very firm negotiation, conducted entirely with one boot. 24%.' },
+      { name: 'RECIPROCAL BACKHAND', dmg: 26, desc: 'You hit me, I tariff you. Reciprocal, 26%.' },
+      { name: 'TRADE WAR TSUNAMI', dmg: 36, cine: 'takes', desc: 'A tremendous wave. The biggest wave. Everybody says so, 36%.' }
     ],
     intro: ['This will be the greatest fight. Everybody says so.', 'I know fights. I have the best fights.', 'No deal is better than a bad deal. Tumhari health bar? Very bad deal.', 'Tariff laga diya hai tumhare confidence pe. Hundred percent.'],
     win: ['Total victory. Complete. The fake news will not report it.', 'I won so much I am tired of winning.']
@@ -67,7 +75,9 @@ KC.ROSTER = [
       { name: 'BULLDOZER BARAAT', dmg: 30, desc: 'A spectral bulldozer crosses the stage. Encroachment removed. 30% damage.' },
       { name: 'THOKO TALWAR', dmg: 24, desc: 'A swift strike with administrative approval.' },
       { name: 'MAHANT MEGAQUAKE', dmg: 34, cine: 'quake', desc: 'Slams the ground; a saffron shockwave evicts the opponent from the arena.' },
-      { name: 'RUDRAKSH ROCKET', dmg: 24, desc: 'One blessed bead, launched like a missile. Spiritually certified. 24%.' }
+      { name: 'RUDRAKSH ROCKET', dmg: 24, desc: 'One blessed bead, launched like a missile. Spiritually certified. 24%.' },
+      { name: 'ENCROACHMENT ELBOW', dmg: 26, desc: 'Your personal space was never approved. Demolished, 26%.' },
+      { name: '1008 RUDRAKSH ROUNDS', dmg: 36, cine: 'gatling', desc: 'A full mala of holy hits, fired at machine-gun speed. 36%.' }
     ],
     intro: ['Shanti se khelunga. Thoda bulldozer bhi chalega.', 'Bulldozer ready hai.', 'Na rahega banter, na rahega tumhara poster.', 'Foundation toh main roz girata hoon. Aaj tumhari guard ki baari.'],
     win: ['Yeh shanti thi. Asli wali.', 'Bulldozer ka kaam ho gaya.']
@@ -81,7 +91,9 @@ KC.ROSTER = [
       { name: 'EXPRESSWAY EXPRESS', dmg: 30, desc: 'Paves a highway under the opponent at 100 kmph and drives them out. 30%.' },
       { name: 'TOLL BOOTH TRAP', dmg: 22, desc: 'A toll booth appears. Opponent cannot pass without change. Or dignity.' },
       { name: 'GREENFIELD GRAND SLAM', dmg: 34, cine: 'flurry', desc: 'Six-lane slap expressway, no speed limit, no mercy.' },
-      { name: 'POTHOLE PLUNGE', dmg: 24, desc: 'Opens a pothole directly under the opponent. The desi sadak claims another. 24%.' }
+      { name: 'POTHOLE PLUNGE', dmg: 24, desc: 'Opens a pothole directly under the opponent. The desi sadak claims another. 24%.' },
+      { name: 'EIGHT-LANE ELBOW', dmg: 26, desc: 'An elbow with its own expressway access. No toll, 26%.' },
+      { name: 'GREEN CORRIDOR CANNONBALL', dmg: 36, cine: 'zoomblast', desc: 'Signal-free corridor, straight through the opponent. 36%.' }
     ],
     intro: ['Road banana hoga. Pehle thoda fight.', 'I have built 40 km of road today. This is cardio.', 'Greenfield corridor seedha tumhari health bar tak.', 'Toll free fight hai aaj. Warna tum afford nahi kar sakte.'],
     win: ['Project completed before deadline.', 'Toll collected. Drive safe.']
@@ -95,7 +107,9 @@ KC.ROSTER = [
       { name: 'ITEM NUMBER IMPACT', dmg: 30, desc: 'Background dancers appear from nowhere. One choreographed blow. 30%.' },
       { name: 'LAAL LIPSTICK LAATH', dmg: 24, desc: 'A spinning kick that gets its own remix.' },
       { name: 'SUPERSTAR SMASHER', dmg: 36, cine: 'takes', desc: 'Seventy takes, one shot, all hits. Box office destruction.' },
-      { name: 'INTERVAL TWIST', dmg: 24, desc: 'Just when the opponent thinks it is over - PLOT TWIST. 24%.' }
+      { name: 'INTERVAL TWIST', dmg: 24, desc: 'Just when the opponent thinks it is over - PLOT TWIST. 24%.' },
+      { name: 'FAN-CLUB FLYING KICK', dmg: 26, desc: 'Sponsored by the official fan association. Autographed, 26%.' },
+      { name: 'CLIMAX SCENE SUPREME', dmg: 36, cine: 'rise', desc: 'Slow motion. Wind machine. One take. Award guaranteed, 36%.' }
     ],
     intro: ['Camera? Rolling. Action!', 'Ego fight ho jai, superhit style mein.', 'Script mein likha hai: tum haarte ho, interval se pehle.', 'Stunt double ki zaroorat padegi tumhe. Spoiler: nahi milega.'],
     win: ['Superhit! 100 crore club entry.', 'Autograph baad mein, pehle trophy.']
@@ -109,7 +123,9 @@ KC.ROSTER = [
       { name: 'GARIB RATH GAUNTLET', dmg: 30, desc: 'A spectral train of pure jugaad runs the opponent over. 30%.' },
       { name: 'CHARA CHAKRAVYUH', dmg: 22, desc: 'A maze of fodder contracts. Opponent loses way and health.' },
       { name: 'LALU... WAIT, RUSTOM ROCKET', dmg: 34, cine: 'flurry', desc: 'Platform announcement of doom followed by a first-class beating.' },
-      { name: 'SHUNTING SLAM', dmg: 24, desc: 'Re-routes the opponent to the wrong platform. Via his spine. 24%.' }
+      { name: 'SHUNTING SLAM', dmg: 24, desc: 'Re-routes the opponent to the wrong platform. Via his spine. 24%.' },
+      { name: 'GENERAL DABBA GUTPUNCH', dmg: 26, desc: 'No reservation needed. Standing room only, in your stomach, 26%.' },
+      { name: 'PLATFORM 9.75 PILEUP', dmg: 36, cine: 'quake', desc: 'Every train on every track arrives at once. On you. 36%.' }
     ],
     intro: ['Are bhains ke aage been bajega kya? Lad le!', 'Humra se takraoge? Ticket kaata?', 'Engine chalu hai. Tumhara guard pehle station pe utrega.', 'Local ho ya express, hum kabhi nahi rukte.'],
     win: ['Signal green ho gaya. Gaadi chali.', 'Samosa khao, jeet manao.']
@@ -123,7 +139,9 @@ KC.ROSTER = [
       { name: 'MASTERSTROKE MIRAGE', dmg: 30, desc: 'You thought he was there. He was here. 30% damage, 100% confusion.' },
       { name: 'ED RAID RUSH', dmg: 24, desc: 'Surprise inspection. Opponent surrenders health without notice.' },
       { name: 'ARAKSHIT AAG', dmg: 36, cine: 'push', desc: 'A reserved seat of fire expands outward. Nothing can stop the masterstroke.' },
-      { name: 'COALITION CRUNCH', dmg: 26, desc: 'Forms a sudden alliance with the floor. The opponent meets it face-first. 26%.' }
+      { name: 'COALITION CRUNCH', dmg: 26, desc: 'Forms a sudden alliance with the floor. The opponent meets it face-first. 26%.' },
+      { name: 'CONFIDENTIAL CHOP', dmg: 26, desc: 'Classified technique. Details sealed for 50 years, 26%.' },
+      { name: 'MASTERSTROKE MAELSTROM', dmg: 36, cine: 'cyclone', desc: 'The final page of the plan. You were in it all along, 36%.' }
     ],
     intro: ['Yeh fight pehle hi decide ho chuki hai.', 'Masterstroke loading...', 'Tumhari strategy mujhe kal hi leak ho gayi thi.', 'Yeh khel charitra ka nahi, chaturai ka hai. Dono mein tum kamzor ho.'],
     win: ['As planned. Sab planned.', 'Ab agla masterstroke.']
@@ -137,7 +155,9 @@ KC.ROSTER = [
       { name: 'JHADOO JUMBLE', dmg: 30, desc: 'Sweeps the opponent out of the arena with the party jhadu. 30%.' },
       { name: 'WIFI MUFT MUKKA', dmg: 22, desc: 'A free punch. No password needed. Straight to the jaw.' },
       { name: 'ODD-EVEN OVERDRIVE', dmg: 34, cine: 'push', desc: 'On odd days he fights on the left, even days right. Today both. Shockwave.' },
-      { name: 'AAM AADMI ARMLOCK', dmg: 24, desc: 'A completely ordinary armlock. Very common. Very painful. 24%.' }
+      { name: 'AAM AADMI ARMLOCK', dmg: 24, desc: 'A completely ordinary armlock. Very common. Very painful. 24%.' },
+      { name: 'MOHALLA MEETING MAUL', dmg: 26, desc: 'The whole neighborhood was consulted. Verdict: maul, 26%.' },
+      { name: 'AANDHI AVALANCHE', dmg: 36, cine: 'gatling', desc: 'A storm of common-man fury. Winter collection, 36%.' }
     ],
     intro: ['Main toh aam aadmi hoon. Aam aadmi bahut maarta hai.', 'Muffler tight, niyat saaf.', 'VIP culture yahan nahi chalega. Yeh aam ring hai.', 'Jhaadu toh hai nahi paas, toh haath hi saaf karna padega.'],
     win: ['Aam aadmi ki jeet! Free wi-fi sabko!', 'Imandari jeet gayi. Aur main bhi.']
@@ -151,7 +171,9 @@ KC.ROSTER = [
       { name: 'RECEIPT RAILGUN', dmg: 30, desc: 'Fires actual receipts at the speed of WhatsApp forwards. 30%.' },
       { name: 'FACK-CHECK FLEX', dmg: 22, desc: 'Debunks the opponent\'s last move so hard it hurts retroactively.' },
       { name: 'VIRAL VERIFICATION', dmg: 34, cine: 'flurry', desc: 'A fact-checking frenzy, shared in 47 family groups simultaneously.' },
-      { name: 'COMMUNITY NOTE CRUSH', dmg: 24, desc: 'Readers added context: your jaw is broken. 24%.' }
+      { name: 'COMMUNITY NOTE CRUSH', dmg: 24, desc: 'Readers added context: your jaw is broken. 24%.' },
+      { name: 'SOURCE SLAM', dmg: 26, desc: 'Citation needed? Cite this. Peer-reviewed pain, 26%.' },
+      { name: 'DEBUNK DISINTEGRATOR', dmg: 36, cine: 'zoomblast', desc: 'Your existence fails the fact check. 36%.' }
     ],
     intro: ['Source? Main hoon source.', 'Aaj fact check nahi, face check hoga.', 'Tumhari winning probability? Community notes ne already debunk kar di.', 'Breaking: tumne apne hi defeat ko verify kar diya.'],
     win: ['Verified. True. Satya. Forward kar do.', 'Fake news down. Fact bhai up.']
@@ -167,7 +189,9 @@ KC.BOSS = {
     { name: 'DANDI DRIVE', dmg: 30, desc: 'Marches forward slowly. You cannot stop the march. 30%.' },
     { name: 'AHIMSA?? NO-MA', dmg: 26, desc: 'Non-violence takes a lunch break. One historic spinning kick.' },
     { name: 'CHARKHA CYCLONE', dmg: 38, cine: 'cyclone', desc: 'The charkha spins at 9000 rpm. The nation has never seen such a blast.' },
-      { name: 'SATYAGRAHA SLAM', dmg: 26, desc: 'Insistence on truth, delivered at terminal velocity. 26%.' }
+      { name: 'SATYAGRAHA SLAM', dmg: 26, desc: 'Insistence on truth, delivered at terminal velocity. 26%.' },
+      { name: 'LATTH-MUKTA LAATH', dmg: 28, desc: 'No stick needed. The kick is the message, 28%.' },
+      { name: 'SATYA SUPERNOVA', dmg: 38, cine: 'rise', desc: 'Truth rises. So do you. Then only truth remains, 38%.' }
   ],
   intro: ['Be the change... after I beat you.', 'My followers are watching. Do not embarrass yourself.', 'The march does not stop. Aaj march tumhare upar se guzregi.', 'Charkha ghoom raha hai. Kismat ka charkha.'],
   win: ['An eye for an eye makes the whole world blind. A kick for a kick makes you fall.', 'First they ignore you. Then they fight you. Then you win. Classic.']

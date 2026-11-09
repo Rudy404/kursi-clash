@@ -75,6 +75,8 @@ window.KC = window.KC || {};
     if (k === 'i') input1.super = 1;
     if (k === 'o' || k === 'l') input1.super = 2;
     if (k === 'p') input1.super = 3; // bonus strike super
+    if (k === 'h') input1.super = 4; // strike super 2
+    if (k === 'n') input1.super = 5; // second cine super
     if (k === 'enter' && el('title').classList.contains('visible')) only('select');
     if (k === 'escape' && game.fight && !game.fight.over) togglePause();
   });
@@ -115,15 +117,17 @@ window.KC = window.KC || {};
   stickZone.addEventListener('touchcancel', stickEnd);
 
   // action buttons
-  let supAlt = true; // toggled before use, so first SUPER press = signature cine (2), next = bonus strike (3)
+  // SUPER button cycles through the fighter's supers: first press = signature cine (2),
+  // then 3, 4, 5... and wraps back to 2. All supers stay reachable on touch.
+  let supCycle = -1;
   document.querySelectorAll('#touch-buttons .tbtn').forEach(btn => {
     const b = btn.dataset.btn;
     const press = e => {
       e.preventDefault();
-      if (b === 'super') { // signature cine super; alternates with the bonus strike super when available
+      if (b === 'super') {
         const arr = (game.fight ? game.fight.p1.def : state.p1).supers;
-        supAlt = !supAlt;
-        input1.super = (arr.length > 3 && supAlt) ? 3 : 2;
+        supCycle = (supCycle + 1) % Math.max(1, arr.length - 2);
+        input1.super = 2 + supCycle;
       }
       else input1[b] = 1;
     };

@@ -94,8 +94,8 @@ KC.Fight = class {
     if (KC.Audio) KC.Audio.play('swing');
   }
 
-  /* SUPER button: signature cine super (supers[2]) if meter full.
-     Desktop keys u/i/o trigger supers[0..2] directly. Non-cine supers = heavy strike + FX. */
+  /* SUPER button cycles supers[2..5] (first press = signature cine).
+     Desktop: u/i/o = supers[0..2], p = 3, h = 4, n = 5. Non-cine supers = heavy strike + FX. */
   trySuper(p, idx) {
     if (p.busy() || !p.grounded() || this.cinematic.active) return;
     if (p.shakti < 1) return;
@@ -371,9 +371,10 @@ KC.Fight = class {
   }
 };
 
+// CPU mostly fires the signature cine (2), sometimes mixes in the other supers
 KC.cpuInput = (intent) => ({
   move: intent.move || 0,
   punch: !!intent.punch, kick: !!intent.kick, grab: !!intent.sweep,
   block: !!intent.block,
-  super: intent.super ? 2 : null,
+  super: intent.super ? (Math.random() < 0.6 ? 2 : 3 + Math.floor(Math.random() * 3)) : null,
 });
