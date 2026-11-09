@@ -323,10 +323,16 @@ window.KC = window.KC || {};
       } else if (online.active && online.role === 'guest') {
         game.fight.update(rawDt, input1, input1);
         online._acc = (online._acc || 0) + rawDt;
+        // latch one-shot flags until the next send: taps used to vanish if no
+        // packet went out on the exact frame the key was pressed
+        const pd = online._pend || (online._pend = { punch: 0, kick: 0, grab: 0, super: null });
+        pd.punch |= input1.punch; pd.kick |= input1.kick; pd.grab |= input1.grab;
+        if (input1.super !== null && input1.super !== undefined) pd.super = input1.super;
         if (online._acc > 0.033) {
           online._acc = 0;
-          KC.Online.send({ t: 'in', i: { move: input1.move, punch: input1.punch, kick: input1.kick,
-            grab: input1.grab, block: input1.block, super: input1.super } });
+          KC.Online.send({ t: 'in', i: { move: input1.move, punch: pd.punch, kick: pd.kick,
+            grab: pd.grab, block: input1.block, super: pd.super } });
+          pd.punch = pd.kick = pd.grab = 0; pd.super = null;
         }
       } else {
         game.fight.update(rawDt, input1, input1);
