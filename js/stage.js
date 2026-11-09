@@ -153,7 +153,7 @@ KC.Camera = class {
     const tanH = Math.tan((this.cam.fov * Math.PI / 180) / 2) * this.cam.aspect;
     // max covers the full legal arena: fighters at x +/-8 must both stay framed (no cropping at extremes)
     const fitDist = this.portrait ? KC.util.clamp((sep / 2 + 0.65) / Math.max(tanH, 0.05), 4.6, 34)
-                                  : KC.util.clamp(sep * 0.9 + 5.5, 7, 20);
+                                  : KC.util.clamp(sep * 0.8 + 4.6, 5.8, 18);
     // cinematic override zooms in for drama, but never crops a fighter out of frame
     const wantDist = distOverride !== undefined ? Math.max(distOverride, fitDist) : fitDist;
     this.dist = KC.util.lerp(this.dist, wantDist, 1 - Math.pow(0.001, dt));
