@@ -158,7 +158,8 @@ KC.FighterAssets = {
     king: 'assets/models/King.glb',
     hoodie: 'assets/models/Hoodie.glb',
     punk: 'assets/models/Punk.glb',
-    womandress: 'assets/models/WomanDress.glb'
+    womandress: 'assets/models/WomanDress.glb',
+    man: 'assets/models/Man.glb'
   },
   cache: {}, ready: false, failed: 0,
   bodyFor(id) { return (typeof KC_BODY_MAP !== 'undefined' && KC_BODY_MAP[id]) || 'knight'; },
@@ -188,7 +189,7 @@ KC.FighterAssets = {
 const KC_BODY_MAP = {
   yatrayodha: 'business', dididhamaka: 'womandress',
   bulldozerbaba: 'farmer', highwayman: 'worker', starneta: 'business', railrustom: 'worker',
-  chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'king',
+  chanakyaboss: 'business', mufflerman: 'hoodie', factbhai: 'punk', mahabapu: 'man',
   chaiboss: 'worker', tariffchacha: 'business'
 };
 
@@ -256,10 +257,32 @@ const KC_ANIM_DIDI = {
   lose:      { clip: 'HumanArmature|Female_Death', hold: true, ts: 0.7 }
 };
 
-const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q', farmer: 'q', womandress: 'didi' };
+/* 11-clip male rig (HumanArmature|Man_*): Sitting doubles as the dharna block */
+const KC_ANIM_MAN = {
+  idle:      { clip: 'HumanArmature|Man_Idle', loop: true },
+  walk:      { clip: 'HumanArmature|Man_Run', loop: true, ts: 1.1 },
+  block:     { clip: 'HumanArmature|Man_Sitting', loop: true },
+  win:       { clip: 'HumanArmature|Man_Clapping', loop: true },
+  punch:     { clip: 'HumanArmature|Man_Punch' },
+  kick:      { clip: 'HumanArmature|Man_SwordSlash' },
+  grab:      { clip: 'HumanArmature|Man_SwordSlash' },
+  hurt:      { clip: 'HumanArmature|Man_Standing' },
+  hit:       { clip: 'HumanArmature|Man_Standing' },
+  sweep:     { clip: 'HumanArmature|Man_Punch' },
+  launched:  { clip: 'HumanArmature|Man_Jump' },
+  air:       { clip: 'HumanArmature|Man_Jump', loop: true },
+  supercast: { clip: 'HumanArmature|Man_Standing' },
+  super:     { clip: 'HumanArmature|Man_SwordSlash' },
+  swing:     { clip: 'HumanArmature|Man_SwordSlash' },
+  intro:     { clip: 'HumanArmature|Man_Jump' },
+  ko:        { clip: 'HumanArmature|Man_Death', hold: true },
+  lose:      { clip: 'HumanArmature|Man_Death', hold: true, ts: 0.7 }
+};
+
+const KC_BODY_ANIMMAP = { business: 'q', worker: 'q', king: 'q', hoodie: 'q', punk: 'q', farmer: 'q', womandress: 'didi', man: 'man' };
 
 /* per-body material-name recolor (bodies whose meshes are not <Prefix>_Body/Legs/Feet) */
-const KC_BODY_MATRECOLOR = { womandress: { Dress: 'kurta', Shoes: 'chappal' } };
+const KC_BODY_MATRECOLOR = { womandress: { Dress: 'kurta', Shoes: 'chappal' }, man: { Shirt: 'kurta', Pants: 'pants', Socks: 'chappal' } };
 
 /* bodies whose clothing texture (plaid etc.) fights dark identity colors: drop the map when recoloring */
 const KC_BODY_FLATTEN = { worker: true };
@@ -274,6 +297,7 @@ const KC_BODY_TUNE = {
   hoodie: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   punk: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   womandress: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
+  man: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 },
   farmer: { headScale: 0.75, headPitch: -0.12, widen: 1.32, ySquash: 0.88 }
 };
 
@@ -313,7 +337,7 @@ KC.GLBFighter = class {
 
     this.root.add(model);
 
-    this.animMap = { q: KC_ANIM_Q, didi: KC_ANIM_DIDI }[KC_BODY_ANIMMAP[bodyName]] || KC_ANIM;
+    this.animMap = { q: KC_ANIM_Q, didi: KC_ANIM_DIDI, man: KC_ANIM_MAN }[KC_BODY_ANIMMAP[bodyName]] || KC_ANIM;
     this.mixer = new THREE.AnimationMixer(model);
     this.actions = {};
     src.animations.forEach(c => { this.actions[c.name] = this.mixer.clipAction(c); });
