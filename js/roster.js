@@ -66,7 +66,7 @@ KC.ROSTER = [
     supers: [
       { name: 'BULLDOZER BARAAT', dmg: 30, desc: 'A spectral bulldozer crosses the stage. Encroachment removed. 30% damage.' },
       { name: 'THOKO TALWAR', dmg: 24, desc: 'A swift strike with administrative approval.' },
-      { name: 'MAHANT MEGAQUAKE', dmg: 34, cine: 'push', desc: 'Slams the ground; a saffron shockwave evicts the opponent from the arena.' },
+      { name: 'MAHANT MEGAQUAKE', dmg: 34, cine: 'quake', desc: 'Slams the ground; a saffron shockwave evicts the opponent from the arena.' },
       { name: 'RUDRAKSH ROCKET', dmg: 24, desc: 'One blessed bead, launched like a missile. Spiritually certified. 24%.' }
     ],
     intro: ['Shanti se khelunga. Thoda bulldozer bhi chalega.', 'Bulldozer ready hai.', 'Na rahega banter, na rahega tumhara poster.', 'Foundation toh main roz girata hoon. Aaj tumhari guard ki baari.'],
@@ -94,7 +94,7 @@ KC.ROSTER = [
     supers: [
       { name: 'ITEM NUMBER IMPACT', dmg: 30, desc: 'Background dancers appear from nowhere. One choreographed blow. 30%.' },
       { name: 'LAAL LIPSTICK LAATH', dmg: 24, desc: 'A spinning kick that gets its own remix.' },
-      { name: 'SUPERSTAR SMASHER', dmg: 36, cine: 'flurry', desc: 'Seventy takes, one shot, all hits. Box office destruction.' },
+      { name: 'SUPERSTAR SMASHER', dmg: 36, cine: 'takes', desc: 'Seventy takes, one shot, all hits. Box office destruction.' },
       { name: 'INTERVAL TWIST', dmg: 24, desc: 'Just when the opponent thinks it is over - PLOT TWIST. 24%.' }
     ],
     intro: ['Camera? Rolling. Action!', 'Ego fight ho jai, superhit style mein.', 'Script mein likha hai: tum haarte ho, interval se pehle.', 'Stunt double ki zaroorat padegi tumhe. Spoiler: nahi milega.'],
@@ -166,7 +166,7 @@ KC.BOSS = {
   supers: [
     { name: 'DANDI DRIVE', dmg: 30, desc: 'Marches forward slowly. You cannot stop the march. 30%.' },
     { name: 'AHIMSA?? NO-MA', dmg: 26, desc: 'Non-violence takes a lunch break. One historic spinning kick.' },
-    { name: 'CHARKHA CYCLONE', dmg: 38, cine: 'push', desc: 'The charkha spins at 9000 rpm. The nation has never seen such a blast.' },
+    { name: 'CHARKHA CYCLONE', dmg: 38, cine: 'cyclone', desc: 'The charkha spins at 9000 rpm. The nation has never seen such a blast.' },
       { name: 'SATYAGRAHA SLAM', dmg: 26, desc: 'Insistence on truth, delivered at terminal velocity. 26%.' }
   ],
   intro: ['Be the change... after I beat you.', 'My followers are watching. Do not embarrass yourself.', 'The march does not stop. Aaj march tumhare upar se guzregi.', 'Charkha ghoom raha hai. Kismat ka charkha.'],

@@ -91,7 +91,116 @@ KC.Cinematic = class {
       : kind === 'rise' ? this._riseBeats()
       : kind === 'gatling' ? this._gatlingBeats()
       : kind === 'zoomblast' ? this._zoomblastBeats()
+      : kind === 'quake' ? this._quakeBeats()
+      : kind === 'takes' ? this._takesBeats()
+      : kind === 'cyclone' ? this._cycloneBeats()
       : this._flurryBeats();
+  }
+
+  /* MAHANT MEGAQUAKE signature: the attacker slams the ground three times - each slam
+     bounces the defender off the floor with a saffron shockwave - then a final quake launches them. */
+  _quakeBeats() {
+    const A = this.attacker, D = this.defender;
+    const beats = [{ d: 0.6, run: () => { A.f3d.play('supercast', 0.6); this.fight.slowmo(0.3); } }];
+    for (let i = 0; i < 3; i++) {
+      beats.push({ d: 0.34, run: () => {
+        this.fight.slowmo(0.7);
+        A.f3d.play('punch', 0.3);
+        this.fight.fx.shockwave(A.x, 0);
+        this.fight.fx.burst(D.x, 0.4, 0, 0xff9f43, 12, 4);
+        KC.game.camera.addShake(0.5);
+        KC.game.camera.addFovKick(3);
+        this.fight.hitstop(0.07);
+        D.liftV = 4.5; D.liftY = Math.max(D.liftY, 0.1); D.airborne = true;
+        D.f3d.play('hurt', 0.25);
+        this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) * 0.18, true);
+      } });
+    }
+    beats.push({ d: 0.2, run: () => {
+      this.fight.slowmo(1);
+      this.fight.fx.shockwave(A.x, 0);
+      this.fight.fx.burst(D.x, 1.2, 0, 0xff9f43, 26, 7);
+      KC.game.camera.addShake(0.65);
+      KC.game.camera.addFovKick(10);
+      this._impactFlash();
+      this.fight.hitstop(0.12);
+      D.vx = A.facing * 13; D.liftV = 9; D.airborne = true;
+      D.f3d.play('launched', 1.0);
+      this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) * 0.46, true);
+    } });
+    beats.push({ d: 1.1, run: () => {} });
+    beats.push({ d: 0.4, run: () => this._end() });
+    return beats;
+  }
+
+  /* SUPERSTAR SMASHER signature: film-set energy - the camera CUTS between close and wide
+     framings on each hit like shot/reverse-shot, spotlight gold bursts, seven takes then the final shot. */
+  _takesBeats() {
+    const beats = [];
+    const A = this.attacker, D = this.defender;
+    beats.push({ d: 0.5, run: () => { A.f3d.play('supercast', 0.5); this.fight.slowmo(0.35); this.camDist = 7.0; } });
+    const total = 7;
+    for (let i = 0; i < total; i++) {
+      beats.push({ d: 0.17, run: () => {
+        this.fight.slowmo(0.6);
+        this.camDist = i % 2 ? 7.2 : 4.4; // camera cut: wide / close
+        A.x = KC.util.clamp(D.x - A.facing * 1.1, -7.5, 7.5);
+        A.f3d.play(i % 3 === 2 ? 'kick' : 'punch', 0.16);
+        D.f3d.play('hurt', 0.18);
+        this.fight.fx.impactFlash(D.x, 1.4 + Math.random() * 0.4, 0.2);
+        this.fight.fx.burst(D.x, 1.5, 0.2, 0xfff2b0, 8, 4);
+        KC.game.camera.addShake(0.16);
+        this.fight.hitstop(0.05);
+        this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) * 0.11, true);
+      } });
+    }
+    beats.push({ d: 0.2, run: () => {
+      this.fight.slowmo(1);
+      this.camDist = 6.0;
+      D.vx = A.facing * 10; D.liftV = 7; D.liftY = 0.2; D.airborne = true;
+      D.f3d.play('launched', 0.9);
+      this.fight.fx.shockwave(D.x, 0);
+      this.fight.fx.burst(D.x, 1.6, 0, 0xfff2b0, 20, 6);
+      KC.game.camera.addShake(0.5);
+      KC.game.camera.addFovKick(8);
+      this._impactFlash();
+      this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) * 0.23, true);
+    } });
+    beats.push({ d: 0.9, run: () => {} });
+    beats.push({ d: 0.3, run: () => this._end() });
+    return beats;
+  }
+
+  /* CHARKHA CYCLONE signature: the charkha spins up - a tightening spiral of khadi-white
+     particles wraps the attacker - then the cyclone releases and blasts the defender away. */
+  _cycloneBeats() {
+    const A = this.attacker, D = this.defender;
+    const spin = [];
+    for (let i = 0; i < 6; i++) {
+      spin.push({ d: 0.18, run: () => {
+        const a = (i / 6) * Math.PI * 2;
+        this.fight.fx.burst(A.x + Math.cos(a) * 1.2, 0.6 + i * 0.25, 0, 0xf5f0e1, 4, 1.5);
+        KC.game.camera.addFovKick(1.5);
+      } });
+    }
+    return [
+      { d: 0.5, run: () => { A.f3d.play('supercast', 1.4); this.fight.slowmo(0.3); } },
+      ...spin,
+      { d: 0.15, run: () => {
+        this.fight.slowmo(1);
+        this.fight.fx.shockwave(A.x, 0);
+        this.fight.fx.burst(A.x + A.facing * 0.8, 1.5, 0, 0xf5f0e1, 30, 7);
+        KC.game.camera.addShake(0.6);
+        KC.game.camera.addFovKick(11);
+        this._impactFlash();
+        this.fight.hitstop(0.13);
+        D.vx = A.facing * 15; D.liftV = 8; D.liftY = 0.2; D.airborne = true;
+        D.f3d.play('launched', 1.0);
+        this.fight.applyDamage(A, D, A.pendingSuper.dmg / 100, true);
+      } },
+      { d: 1.1, run: () => {} },
+      { d: 0.4, run: () => this._end() },
+    ];
   }
 
   /* ALMIGHTY AASHIRWAD signature: three ascending golden ring pulses while charging,
