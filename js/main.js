@@ -266,6 +266,7 @@ window.KC = window.KC || {};
     paused = false; hide('pause-menu');
     el('touch-ui').classList.remove('ingame');
     if (online.active) { online.active = false; KC.Online.close(); online.role = null; onlineStatus(''); }
+    if (game.fight) game.fight.dispose();
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
   };
