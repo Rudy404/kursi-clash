@@ -237,6 +237,7 @@ KC.Fight = class {
     loser.f3d.play('ko');
     this.wins[winner.side]++;
     this.phase = 'roundEnd'; this.phaseT = 0;
+    if (KC.superPickerClose) KC.superPickerClose();
     this.hitstop(0.25); this.slowmo(0.3);
     setTimeout(() => this.slowmo(1), 700);
     KC.game.camera.addShake(0.4);
@@ -363,6 +364,7 @@ KC.Fight = class {
 
   matchOver() {
     this.over = true;
+    if (KC.superPickerClose) KC.superPickerClose();
     const winner = this.wins[0] >= 2 ? this.p1 : this.p2;
     const loser = winner === this.p1 ? this.p2 : this.p1;
     winner.f3d.play('win'); loser.f3d.play('lose');

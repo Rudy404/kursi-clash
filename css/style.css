@@ -209,3 +209,7 @@ body.lowfx #speedlines { animation:none; opacity:.3; }
 #super-picker button { font-family:inherit; font-size:10px; padding:10px 8px; border-radius:10px;
   border:2px solid var(--ink); background:rgba(55,200,245,.85); color:#0b0b12; font-weight:700; }
 #super-picker button.sig { background:rgba(255,210,63,.9); }
+
+#super-hint { position:absolute; right:0; bottom:-16px; width:100%; text-align:center; font-size:8.5px;
+  color:#ffe9b0; letter-spacing:.04em; pointer-events:none; white-space:nowrap; }
+#touch-buttons { position:fixed; }

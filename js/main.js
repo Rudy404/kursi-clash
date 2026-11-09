@@ -123,6 +123,7 @@ window.KC = window.KC || {};
   const picker = el('super-picker');
   let pickerOpenFor = null;
   const closePicker = () => { picker.classList.add('hidden'); pickerOpenFor = null; };
+  KC.superPickerClose = closePicker; // fight.js dismisses on round/match transitions
   const openPicker = () => {
     // the LOCAL player's fighter: host/CPU = p1, online guest = p2
     const def = game.fight ? (online.active && online.role === 'guest' ? game.fight.p2.def : game.fight.p1.def) : state.p1;
@@ -361,10 +362,11 @@ window.KC = window.KC || {};
     }
     startFight();
   };
-  el('change-btn').onclick = () => { only('select'); game.hud.hide(); el('touch-ui').classList.remove('ingame'); if (game.fight) { game.fight.dispose(); game.fight = null; } };
+  el('change-btn').onclick = () => { if (KC.superPickerClose) KC.superPickerClose(); only('select'); game.hud.hide(); el('touch-ui').classList.remove('ingame'); if (game.fight) { game.fight.dispose(); game.fight = null; } };
   el('pause-btn').onclick = () => togglePause();
   el('resume-btn').onclick = () => togglePause();
   el('quit-btn').onclick = () => {
+    if (KC.superPickerClose) KC.superPickerClose();
     paused = false; hide('pause-menu');
     el('touch-ui').classList.remove('ingame');
     if (online.active) { online.active = false; online.matchStarted = false; KC.NetRouter.close(); online.role = null; onlineStatus(''); }
@@ -400,6 +402,7 @@ window.KC = window.KC || {};
   let paused = false;
   function togglePause() {
     paused = !paused;
+    if (paused && KC.superPickerClose) KC.superPickerClose();
     el('pause-menu').classList.toggle('visible', paused);
   }
 
