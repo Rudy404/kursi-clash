@@ -68,6 +68,11 @@ KC.Cinematic = class {
   }
 
   /* kind: 'push' (almighty-push style repel) | 'flurry' (rapid juggle) */
+  _impactFlash() {
+    const el = document.getElementById('impact-flash');
+    if (!el) return;
+    el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+  }
   start(kind, attacker, defender, onDone) {
     this.active = true;
     this.kind = kind;
@@ -92,6 +97,8 @@ KC.Cinematic = class {
           this.fight.fx.shockwave(this.attacker.x, 0);
           this.fight.fx.burst(this.attacker.x + this.attacker.facing * 0.8, 1.4, 0, 0xfff2b0, 26, 6);
           KC.game.camera.addShake(0.5);
+          KC.game.camera.addFovKick(9);
+          this._impactFlash();
           this.fight.hitstop(0.12);
           const d = this.defender;
           d.vx = this.attacker.facing * 14; d.liftV = 7; d.liftY = 0.2; d.airborne = true;
@@ -117,6 +124,7 @@ KC.Cinematic = class {
         this.fight.fx.impactFlash(D.x, 1.4 + Math.random() * 0.5, 0.2);
         this.fight.fx.burst(D.x, 1.4, 0.2, i % 2 ? 0xffd23f : 0xff6b6b, 6, 3);
         KC.game.camera.addShake(0.18);
+        KC.game.camera.addFovKick(2.5);
         this.fight.hitstop(0.05);
         this.fight.applyDamage(A, D, (A.pendingSuper.dmg / 100) / total, true);
       } });
@@ -127,6 +135,8 @@ KC.Cinematic = class {
       D.f3d.play('launched', 0.8);
       this.fight.fx.shockwave(D.x, 0);
       KC.game.camera.addShake(0.4);
+      KC.game.camera.addFovKick(7);
+      this._impactFlash();
     } });
     beats.push({ d: 0.9, run: () => {} });
     beats.push({ d: 0.3, run: () => this._end() });

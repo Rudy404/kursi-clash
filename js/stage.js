@@ -142,9 +142,11 @@ KC.Camera = class {
   constructor() {
     this.cam = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     this.baseY = 2.4; this.dist = 9.5;
-    this.shake = 0; this.zoomT = 0; this.zoomTo = 1; this.focusX = 0;
+    this.shake = 0; this.zoomT = 0; this.zoomTo = 1; this.focusX = 0; this.fovKick = 0;
   }
   addShake(v) { this.shake = Math.min(0.5, this.shake + v); }
+  // anime impact punch: momentary zoom-in that releases fast (fov drops, then decays back)
+  addFovKick(v) { this.fovKick = Math.min(12, this.fovKick + v); }
   follow(ax, bx, dt, midOverride, distOverride) {
     const mid = midOverride !== undefined ? midOverride : (ax + bx) / 2;
     const sep = Math.abs(ax - bx);
@@ -164,6 +166,13 @@ KC.Camera = class {
     const halfMax = Math.max(Math.abs(ax - this.focusX), Math.abs(bx - this.focusX));
     const hardFit = (halfMax + (this.portrait ? 0.65 : 1.2)) / Math.max(tanH, 0.05);
     this.dist = Math.max(this.dist, this.portrait ? KC.util.clamp(hardFit, 4.6, 34) : KC.util.clamp(hardFit, 5.8, 18));
+    // fov punch decay (impact zoom-in releases over ~0.4s)
+    if (this.fovKick > 0) {
+      this.cam.fov = (this.portrait ? 55 : 38) - this.fovKick;
+      this.cam.updateProjectionMatrix();
+      this.fovKick = Math.max(0, this.fovKick - dt * 26);
+      if (this.fovKick === 0) { this.cam.fov = this.portrait ? 55 : 38; this.cam.updateProjectionMatrix(); }
+    }
     this.shake = Math.max(0, this.shake - dt * 1.4);
     const sx = (Math.random() - 0.5) * this.shake, sy = (Math.random() - 0.5) * this.shake;
     const baseY = this.portrait ? 2.1 : this.baseY;

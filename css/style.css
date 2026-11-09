@@ -109,6 +109,19 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0b0620;
 #splash .spl { font-size:min(16vw,120px); font-style:italic; color:var(--gold); -webkit-text-stroke:3px var(--ink);
   text-shadow:0 10px 0 rgba(0,0,0,.45); animation:splpop .5s ease-out; }
 @keyframes splpop { 0% { transform:scale(.2) rotate(-8deg); opacity:0; } 60% { transform:scale(1.15) rotate(2deg); } 100% { transform:scale(1); opacity:1; } }
+/* anime cine pack: letterbox bars + speed lines + impact flash (body.cine toggled by cinematics.js) */
+body::before, body::after { content:''; position:fixed; left:0; right:0; height:0; background:#000; z-index:14;
+  transition:height .35s ease; pointer-events:none; }
+body::before { top:0; } body::after { bottom:0; }
+body.cine::before, body.cine::after { height:7vh; }
+#speedlines { position:fixed; inset:-40px; pointer-events:none; z-index:13; opacity:0; transition:opacity .25s;
+  background:repeating-linear-gradient(100deg, transparent 0 14px, rgba(255,255,255,.16) 14px 17px, transparent 17px 34px);
+  animation:lineslide .28s linear infinite paused; }
+body.cine #speedlines { opacity:1; animation-play-state:running; }
+@keyframes lineslide { from { transform:translateX(0); } to { transform:translateX(-34px); } }
+#impact-flash { position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:16; }
+#impact-flash.go { animation:iflash .22s ease-out; }
+@keyframes iflash { 0% { opacity:.92; } 100% { opacity:0; } }
 .icon-btn { position:absolute; top:calc(54px + env(safe-area-inset-top)); width:38px; height:38px; border-radius:50%;
   border:3px solid var(--ink); background:rgba(20,12,4,.85); color:#fff; font-size:16px; cursor:pointer; z-index:15; }
 #pause-btn { left:50%; transform:translateX(-50%); }
