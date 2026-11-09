@@ -308,9 +308,10 @@ window.KC = window.KC || {};
       if (online.active && online.role === 'host') {
         game.fight.update(rawDt, input1, online.remoteInput);
         online._acc = (online._acc || 0) + rawDt;
+        const f = game.fight;
         if (online._acc > 0.066) {
           online._acc = 0;
-          const f = game.fight, pack = p => ({ x: +p.x.toFixed(3), hp: +p.hp.toFixed(3), shakti: +p.shakti.toFixed(3),
+          const pack = p => ({ x: +p.x.toFixed(3), hp: +p.hp.toFixed(3), shakti: +p.shakti.toFixed(3),
             state: p.state, facing: p.facing, blocking: p.blocking, liftY: +p.liftY.toFixed(3), airborne: p.airborne, anim: p.f3d.anim });
           KC.Online.send({ t: 'snap', s: { p1: pack(f.p1), p2: pack(f.p2), phase: f.phase,
             timeLeft: +f.timeLeft.toFixed(2), round: f.round, wins: f.wins.slice(), timeUp: f.timeLeft <= 0 } });
