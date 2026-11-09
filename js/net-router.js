@@ -10,7 +10,7 @@
   const root = typeof window !== 'undefined' ? window : globalThis;
   root.KC = root.KC || {};
 
-  const RELIABLE_TYPES = new Set(['start', 'pick', 'ev']);
+  const RELIABLE_TYPES = new Set(['start', 'pick', 'ev', 'ready']);
 
   let mode = 'peerjs'; // 'peerjs' | 'relay'
   let relayBase = null;
@@ -29,6 +29,9 @@
     relay.onMessage(d => { if (onMessageCb) onMessageCb(d); });
     relay.onOpen(() => { if (onOpenCb) onOpenCb(); });
     relay.onClose(() => { if (onCloseCb) onCloseCb(); });
+    // a reliable one-shot exhausted its retries: the match state is no longer
+    // trustworthy, so surface it as a connection loss (triggers rejoin/teardown)
+    relay.onDrop(() => { if (onCloseCb) onCloseCb(); });
   }
 
   function host(cb) {

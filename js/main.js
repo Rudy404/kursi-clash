@@ -225,7 +225,14 @@ window.KC = window.KC || {};
       const attempt = () => {
         tries++;
         KC.NetRouter.rejoin(res => {
-          if (res.ok) { onlineStatus('Reconnected!'); return; }
+          if (res.ok) {
+            onlineStatus('Reconnected!');
+            // tell the host whether our local match object survived the drop:
+            // started=false makes the host resend 'start' (we never got it or the
+            // fight is gone); started=true means the snap stream re-converges us
+            KC.NetRouter.send({ t: 'ready', started: !!(online.matchStarted && game.fight) });
+            return;
+          }
           if (tries < 5) { onlineStatus('Connection dropped - retry ' + tries + '/5...'); setTimeout(attempt, 3000); return; }
           onlineStatus('Connection closed.');
           online.active = false;
@@ -241,11 +248,13 @@ window.KC = window.KC || {};
   KC.NetRouter.onMessage(d => {
     if (!d || !d.t) return;
     if (d.t === 'pick') { online.guestPick = d.name; onlineStatus('Friend picked ' + d.name + '. Your turn - pick and FIGHT!'); }
-    if (d.t === 'peer' && d.state === 'joined' && online.role === 'host') {
-      // (re)joined peer: if the match already started, the 15Hz snap stream
-      // converges their puppet within one tick; if not, resend the start one-shot
-      if (online.active && game.fight && !game.fight.over) return;
-      if (online.matchStarted) KC.NetRouter.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+    if (d.t === 'ready' && online.role === 'host') {
+      // rejoined guest declares its state: if it never started (or lost the fight
+      // object) while our match is running, resend the start one-shot so it can
+      // build the fight; if it started, the 15Hz snap stream converges its puppet
+      if (!d.started && online.matchStarted && game.fight && !game.fight.over) {
+        KC.NetRouter.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+      }
     }
     if (d.t === 'start' && online.role === 'guest') {
       online.matchStarted = true;
