@@ -54,6 +54,12 @@
       <input id="join-code" class="join-input" maxlength="6" placeholder="CODE" autocomplete="off">
       <button id="join-btn" class="act-btn alt">JOIN</button>
     </div>
+    <div class="online-row relay-switch">
+      <label class="relay-label"><input type="checkbox" id="relay-toggle"> RELAY (beta)</label>
+    </div>
+    <div class="online-row hidden" id="relay-row">
+      <input id="relay-base" class="join-input relay-base-input" placeholder="Relay server (https://...workers.dev)" autocomplete="off">
+    </div>
     <div id="online-status" class="online-status"></div>
   </div>
   <div id="fighter-info-left" class="fighter-info left"></div>
@@ -128,6 +134,8 @@
 <script src="js/roster.js?v=5"></script>
 <script src="js/rival-banter.js?v=3"></script>
 <script src="js/online.js?v=2"></script>
+<script src="js/net-relay.js?v=1"></script>
+<script src="js/net-router.js?v=1"></script>
 <script src="js/audio.js"></script>
 <script src="js/faces.js"></script>
 <script src="js/head3d.js?v=2"></script>
@@ -138,6 +146,6 @@
 <script src="js/cinematics.js?v=3"></script>
 <script src="js/cpu.js"></script>
 <script src="js/fight.js?v=4"></script>
-<script src="js/main.js?v=13"></script>
+<script src="js/main.js?v=14"></script>
 </body>
 </html>

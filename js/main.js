@@ -182,14 +182,34 @@ window.KC = window.KC || {};
     only('title');
   };
   el('title').onclick = () => only('select');
-  // ---------- online friend mode (PeerJS cloud signaling, free public server) ----------
+  // ---------- online friend mode (default PeerJS; optional WS room relay) ----------
   const onlineStatus = t => { el('online-status').textContent = t; };
   el('friend-btn').onclick = () => el('online-panel').classList.toggle('hidden');
+  // transport toggle: PeerJS stays the default; RELAY uses the room-relay prototype
+  const relayRow = el('relay-row');
+  if (KC.NetRouter.getMode() === 'relay') { el('relay-toggle').checked = true; relayRow.classList.remove('hidden'); if (KC.NetRouter.getRelayBase()) el('relay-base').value = KC.NetRouter.getRelayBase(); el('join-code').placeholder = 'Paste the full room key'; el('join-code').removeAttribute('maxlength'); }
+  el('relay-toggle').onchange = e => {
+    if (e.target.checked) {
+      const base = el('relay-base').value.trim();
+      if (!base) { e.target.checked = false; onlineStatus('Enter the relay server address first.'); return; }
+      KC.NetRouter.setRelay(base);
+      relayRow.classList.remove('hidden');
+      el('join-code').placeholder = 'Paste the full room key';
+      el('join-code').removeAttribute('maxlength');
+    } else {
+      KC.NetRouter.setPeerJS();
+      relayRow.classList.add('hidden');
+      el('join-code').placeholder = 'CODE';
+      el('join-code').maxLength = 6;
+    }
+  };
   el('join-btn').onclick = () => {
-    const code = el('join-code').value.toUpperCase().trim();
-    if (code.length !== 6) { onlineStatus('Enter the 6-letter room code.'); return; }
-    onlineStatus('Joining room ' + code + '...');
-    KC.Online.join(code, res => {
+    const code = el('join-code').value.trim();
+    const isRelay = KC.NetRouter.getMode() === 'relay';
+    if (!isRelay && code.length !== 6) { onlineStatus('Enter the 6-letter room code.'); return; }
+    if (isRelay && !/^[0-9a-f]{32}:[0-9a-f]{32}$/.test(code)) { onlineStatus('Paste the full room key (room:secret).'); return; }
+    onlineStatus('Joining room...');
+    KC.NetRouter.join(code, res => {
       if (!res.ok) { onlineStatus('Could not join: ' + res.error); return; }
       online.role = 'guest';
       onlineStatus('Connected! Pick your neta and hit FIGHT.');
@@ -197,24 +217,49 @@ window.KC = window.KC || {};
   };
   el('host-btn').onclick = () => {
     onlineStatus('Creating room...');
-    KC.Online.host(res => {
+    KC.NetRouter.host(res => {
       if (!res.ok) { onlineStatus('Could not create room: ' + res.error); return; }
       online.role = 'host';
       onlineStatus('Room code: ' + res.code + ' - share it with your friend. Waiting for them to join...');
     });
   };
-  KC.Online.onOpen(() => {
+  KC.NetRouter.onOpen(() => {
     if (online.role === 'host') onlineStatus('Friend connected! Pick your neta and hit FIGHT when they have picked theirs.');
     if (online.role === 'guest') onlineStatus('Connected! Pick your neta and hit FIGHT.');
   });
-  KC.Online.onClose(() => {
+  KC.NetRouter.onClose(() => {
+    // mid-match drop on the relay: try to rejoin with stored credentials before
+    // tearing down - the snap stream converges the match within one tick of rejoin
+    if (online.active && KC.NetRouter.getMode() === 'relay') {
+      let tries = 0;
+      onlineStatus('Connection dropped - rejoining...');
+      const attempt = () => {
+        tries++;
+        KC.NetRouter.rejoin(res => {
+          if (res.ok) { onlineStatus('Reconnected!'); return; }
+          if (tries < 5) { onlineStatus('Connection dropped - retry ' + tries + '/5...'); setTimeout(attempt, 3000); return; }
+          onlineStatus('Connection closed.');
+          online.active = false;
+          if (game.fight) { game.fight = null; game.hud.hide(); game.commentary.stopAll(); only('select'); }
+        });
+      };
+      setTimeout(attempt, 1000);
+      return;
+    }
     onlineStatus('Connection closed.');
     if (online.active) { online.active = false; if (game.fight) { game.fight = null; game.hud.hide(); game.commentary.stopAll(); only('select'); } }
   });
-  KC.Online.onMessage(d => {
+  KC.NetRouter.onMessage(d => {
     if (!d || !d.t) return;
     if (d.t === 'pick') { online.guestPick = d.name; onlineStatus('Friend picked ' + d.name + '. Your turn - pick and FIGHT!'); }
+    if (d.t === 'peer' && d.state === 'joined' && online.role === 'host') {
+      // (re)joined peer: if the match already started, the 15Hz snap stream
+      // converges their puppet within one tick; if not, resend the start one-shot
+      if (online.active && game.fight && !game.fight.over) return;
+      if (online.matchStarted) KC.NetRouter.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+    }
     if (d.t === 'start' && online.role === 'guest') {
+      online.matchStarted = true;
       state.p1 = KC.ROSTER.find(r => r.name === d.p1) || state.p1;
       state.p2 = KC.ROSTER.find(r => r.name === d.p2) || state.p2;
       state.selStage = d.stage | 0;
@@ -243,15 +288,16 @@ window.KC = window.KC || {};
 
   el('fight-btn').onclick = () => {
     if (!state.p1) { el('select-hint').textContent = 'Pehle neta chuno!'; return; }
-    if (online.role === 'host' && KC.Online.connected()) {
+    if (online.role === 'host' && KC.NetRouter.connected()) {
       if (!online.guestPick) { onlineStatus('Waiting for your friend to pick their neta...'); return; }
       state.p2 = KC.ROSTER.find(r => r.name === online.guestPick) || state.p2;
-      KC.Online.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+      KC.NetRouter.send({ t: 'start', p1: state.p1.name, p2: state.p2.name, stage: state.selStage });
+      online.matchStarted = true;
       startFightOnline('host');
       return;
     }
-    if (online.role === 'guest' && KC.Online.connected()) {
-      KC.Online.send({ t: 'pick', name: state.p1.name });
+    if (online.role === 'guest' && KC.NetRouter.connected()) {
+      KC.NetRouter.send({ t: 'pick', name: state.p1.name });
       state.p2 = state.p1; // placeholder until host sends start
       onlineStatus('Picked ' + state.p1.name + '. Waiting for host to start...');
       return;
@@ -265,7 +311,7 @@ window.KC = window.KC || {};
   el('quit-btn').onclick = () => {
     paused = false; hide('pause-menu');
     el('touch-ui').classList.remove('ingame');
-    if (online.active) { online.active = false; KC.Online.close(); online.role = null; onlineStatus(''); }
+    if (online.active) { online.active = false; KC.NetRouter.close(); online.role = null; onlineStatus(''); }
     if (game.fight) game.fight.dispose();
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
@@ -328,12 +374,12 @@ window.KC = window.KC || {};
           online._acc = 0;
           const pack = p => ({ x: +p.x.toFixed(3), hp: +p.hp.toFixed(3), shakti: +p.shakti.toFixed(3),
             state: p.state, facing: p.facing, blocking: p.blocking, liftY: +p.liftY.toFixed(3), airborne: p.airborne, anim: p.f3d.anim });
-          KC.Online.send({ t: 'snap', s: { p1: pack(f.p1), p2: pack(f.p2), phase: f.phase,
+          KC.NetRouter.send({ t: 'snap', s: { p1: pack(f.p1), p2: pack(f.p2), phase: f.phase,
             timeLeft: +f.timeLeft.toFixed(2), round: f.round, wins: f.wins.slice(), timeUp: f.timeLeft <= 0 } });
         }
         while (f.events.length) {
           const ev = f.events.shift();
-          if (ev.t === 'super') KC.Online.send({ t: 'ev', kind: 'super', i: ev.i, who: ev.who });
+          if (ev.t === 'super') KC.NetRouter.send({ t: 'ev', kind: 'super', i: ev.i, who: ev.who });
         }
       } else if (online.active && online.role === 'guest') {
         game.fight.update(rawDt, input1, input1);
@@ -345,7 +391,7 @@ window.KC = window.KC || {};
         if (input1.super !== null && input1.super !== undefined) pd.super = input1.super;
         if (online._acc > 0.033) {
           online._acc = 0;
-          KC.Online.send({ t: 'in', i: { move: input1.move, punch: pd.punch, kick: pd.kick,
+          KC.NetRouter.send({ t: 'in', i: { move: input1.move, punch: pd.punch, kick: pd.kick,
             grab: pd.grab, block: input1.block, super: pd.super } });
           pd.punch = pd.kick = pd.grab = 0; pd.super = null;
         }
