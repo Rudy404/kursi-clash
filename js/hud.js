@@ -58,6 +58,7 @@ KC.HUD = class {
     this._splashT = setTimeout(() => { this.el.splash.innerHTML = ''; }, dur || 1400);
   }
   cineLabel(text) {
+    clearTimeout(this._splashT); // a stale splash timeout must not wipe the cine label mid-cinematic
     if (!text) { this.el.splash.innerHTML = ''; return; }
     this.el.splash.innerHTML = `<div class="spl" style="font-size:min(6vw,44px);-webkit-text-stroke:2px var(--ink);text-shadow:0 4px 0 rgba(0,0,0,.45)">${text}</div>`;
   }
