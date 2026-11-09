@@ -186,24 +186,12 @@ window.KC = window.KC || {};
   // ---------- online friend mode (default PeerJS; optional WS room relay) ----------
   const onlineStatus = t => { el('online-status').textContent = t; };
   el('friend-btn').onclick = () => el('online-panel').classList.toggle('hidden');
-  // transport toggle: PeerJS stays the default; RELAY uses the room-relay prototype
-  const relayRow = el('relay-row');
-  if (KC.NetRouter.getMode() === 'relay') { el('relay-toggle').checked = true; relayRow.classList.remove('hidden'); if (KC.NetRouter.getRelayBase()) el('relay-base').value = KC.NetRouter.getRelayBase(); el('join-code').placeholder = 'Paste the full room key'; el('join-code').removeAttribute('maxlength'); }
-  el('relay-toggle').onchange = e => {
-    if (e.target.checked) {
-      const base = el('relay-base').value.trim();
-      if (!base) { e.target.checked = false; onlineStatus('Enter the relay server address first.'); return; }
-      KC.NetRouter.setRelay(base);
-      relayRow.classList.remove('hidden');
-      el('join-code').placeholder = 'Paste the full room key';
-      el('join-code').removeAttribute('maxlength');
-    } else {
-      KC.NetRouter.setPeerJS();
-      relayRow.classList.add('hidden');
-      el('join-code').placeholder = 'CODE';
-      el('join-code').maxLength = 6;
-    }
-  };
+  // relay transport is dev opt-in only (?relay=<base>) - no public UI until a live
+  // verified relay endpoint exists. The join input widens for room keys in that mode.
+  if (KC.NetRouter.getMode() === 'relay') {
+    el('join-code').placeholder = 'Paste the full room key';
+    el('join-code').removeAttribute('maxlength');
+  }
   el('join-btn').onclick = () => {
     const code = el('join-code').value.trim();
     const isRelay = KC.NetRouter.getMode() === 'relay';
