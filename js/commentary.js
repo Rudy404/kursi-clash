@@ -46,11 +46,27 @@ KC.Commentary = class {
 
   _pickVoice(cfg) {
     const vs = this._voices || (this._voices = speechSynthesis.getVoices());
-    if (!vs.length) return null;
-    const en = vs.filter(v => /en[-_]/i.test(v.lang));
-    const pool = en.length ? en : vs;
+    if (!vs.length) return null;  // empty list: browser default voice handles it
+    // desi anchors first: hi-IN, then en-IN, then any English, then anything
+    const hi = vs.filter(v => /^hi([-_]|$)/i.test(v.lang));
+    const enIN = vs.filter(v => /^en[-_]IN$/i.test(v.lang));
+    const en = vs.filter(v => /^en[-_]/i.test(v.lang));
+    const pool = hi.length ? hi : enIN.length ? enIN : en.length ? en : vs;
     const i = cfg === this.personas.A ? 0 : 1;
     return pool[(i * 7 + 3) % pool.length];
+  }
+
+  // iOS/Safari + Chrome autoplay policies: the first speak() must ride a user
+  // gesture. Call from a pointerdown/keydown handler; harmless if repeated.
+  unlock() {
+    if (!window.speechSynthesis || this._unlocked) return;
+    this._unlocked = true;
+    try {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      u.onend = u.onerror = () => {};
+      speechSynthesis.speak(u);
+    } catch (e) {}
   }
 
   say(persona, text, opts) {

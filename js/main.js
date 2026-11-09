@@ -338,6 +338,10 @@ window.KC = window.KC || {};
     game.fight = null; game.hud.hide(); game.commentary.stopAll();
     only('select');
   };
+  // TTS autoplay unlock: first real gesture anywhere primes speechSynthesis.
+  const unlockTTS = () => { game.commentary.unlock(); };
+  window.addEventListener('pointerdown', unlockTTS, { passive: true });
+  window.addEventListener('keydown', unlockTTS);
   el('mute-btn').onclick = () => {
     const m = !game.commentary.muted;
     game.commentary.muted = m; KC.Audio.muted = m;
