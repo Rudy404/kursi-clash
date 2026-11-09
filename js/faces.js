@@ -39,6 +39,15 @@ KC.Faces = {
     x.fillStyle = '#fff';
     x.beginPath(); x.arc(88, eyeY - 1, 2.4, 0, 7); x.arc(172, eyeY - 1, 2.4, 0, 7); x.fill();
 
+    // superstar sunglasses
+    if (f.shades) {
+      x.fillStyle = '#14181f';
+      x.beginPath(); x.roundRect(54, eyeY - 22, 62, 42, 10); x.roundRect(140, eyeY - 22, 62, 42, 10); x.fill();
+      x.fillStyle = '#1a1a1a'; x.fillRect(50, eyeY - 30, 156, 12); x.fillRect(112, eyeY - 4, 32, 8);
+      x.fillStyle = 'rgba(255,255,255,.28)';
+      x.beginPath(); x.ellipse(74, eyeY - 10, 10, 5, -0.5, 0, 7); x.ellipse(160, eyeY - 10, 10, 5, -0.5, 0, 7); x.fill();
+    }
+
     // glasses
     if (f.glasses) {
       x.strokeStyle = '#3a2c14'; x.lineWidth = 5;

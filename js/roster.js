@@ -37,7 +37,7 @@ KC.ROSTER = [
   {
     id: 'dididhamaka', name: 'DIDI DHAMAKA', team: 'Team Para',
     skin: 0xecc39a, hair: 'bun', beard: 'none', glasses: false,
-    kurta: 0x3f8cff, pants: 0xf2ede2, chappal: 0x444,
+    kurta: 0xf5f1e6, pants: 0xf2ede2, chappal: 0x444,
     desc: 'Hawai chappal. Cotton saree. Zero chill.',
     supers: [
       { name: 'CHAPPAL CHAMATKAR', dmg: 30, desc: 'One hawai chappal, thrown with parliamentary precision. 30% damage.' },
@@ -100,7 +100,7 @@ KC.ROSTER = [
   },
   {
     id: 'starneta', name: 'STAR NETA', team: 'Team Bhojpur',
-    skin: 0xdda070, hair: 'curly', beard: 'mustache', glasses: false,
+    skin: 0xdda070, hair: 'curly', beard: 'mustache', glasses: false, shades: true,
     kurta: 0x8e44ad, pants: 0xf2ede2, chappal: 0x6b4a2a,
     desc: 'Bhojpuri superstar turned MP. Fights in 4K with background dancers.',
     supers: [

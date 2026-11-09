@@ -55,6 +55,18 @@ KC.Head3D = {
       add(new THREE.BoxGeometry(0.06, 0.014, 0.02), gm, 0, eyeY + 0.01, 0.315);
     }
 
+    // superstar sunglasses: dark opaque lenses, thick top bar
+    if (f.shades) {
+      const lensM = M(0x101318, 0.25), frameM = M(0x1a1a1a, 0.4);
+      for (const s of [-1, 1]) {
+        add(sph(14, 10), lensM, s * eyeX, eyeY, 0.30, 0.115, 0.095, 0.030);
+        const arm = add(new THREE.BoxGeometry(0.03, 0.03, 0.24), frameM, s * (eyeX + 0.105), eyeY + 0.02, 0.17);
+        arm.rotation.y = s * -0.18;
+      }
+      add(new THREE.BoxGeometry(0.34, 0.045, 0.04), frameM, 0, eyeY + 0.075, 0.29);
+      add(new THREE.BoxGeometry(0.07, 0.035, 0.03), frameM, 0, eyeY + 0.01, 0.30);
+    }
+
     // hair
     const hm = M(hairCol, 0.85);
     if (f.hair === 'sidepart') {
